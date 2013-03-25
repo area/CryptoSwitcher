@@ -5,9 +5,9 @@ A script to switch between mining LTC and BTC as profitability dictates.
 
 Dependencies
 ---
-*cgminer
-*BeautifulSoup4
-*urllib2
+* cgminer
+* BeautifulSoup4
+* urllib2
 
 Usage
 ---
