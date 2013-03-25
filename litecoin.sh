@@ -1,4 +1,10 @@
 #!/bin/bash
+#This exit is deliberately included so that people don't just download
+#and run this script and somehow ruin their mining setup with
+#the clocks below, which are appropriate for my rig
+#Remove it and adjust the script below, or replace this whole script
+#with one of your own.
+exit
 #Send the quit command to any cgminer instances running
 echo "{\"command\":\"quit\"}" | nc 127.0.0.1 4028
 #Set clocks
