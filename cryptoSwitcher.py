@@ -13,12 +13,12 @@ import numpy as np
 #Enable the coins you want to mine here.
 minebtc = True
 mineltc = True
-mineppc = True
+mineppc = False
 minenvc = False
-minetrc = True
+minetrc = False
 
 #Mine vanity addresses
-minevanity = True
+minevanity = False
 
 #If you're merged mining some altcoins when you're bitcoin mining, set
 #the relevant coins below to 'True'
@@ -88,11 +88,10 @@ while True:
     ixcprofit=0
     dvcprofit=0
     btcprofit = float(threshold)
-    nmcprofit=0
-    dvcprofit=0
-    ixcprofit=0
+    
     for coinrow in coins:
         coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
+        if profit =='?': profit = 0
         #No BTC here, because mining BTC is always 100% compared to BTC
         if coinName == "Litecoin" and mineltc:
             ltcprofit = float(profit)
