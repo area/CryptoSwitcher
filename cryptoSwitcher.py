@@ -3,6 +3,10 @@ import urllib2
 import time
 import subprocess
 import numpy as np
+import sys
+#Ugly hack so git submodule init is adequate.
+sys.path.insert(0, './btce-api/')
+import btceapi
 
 #---------------------------------------
 # Cryptocurrency mining switcher
@@ -13,12 +17,12 @@ import numpy as np
 #Enable the coins you want to mine here.
 minebtc = True
 mineltc = True
-mineppc = False
+mineppc = True
 minenvc = False
-minetrc = False
+minetrc = True
 
 #Mine vanity addresses
-minevanity = False
+minevanity = True
 
 #If you're merged mining some altcoins when you're bitcoin mining, set
 #the relevant coins below to 'True'
@@ -55,10 +59,43 @@ threshold = 105
 gkeypersec = float(0.05) #Gigakeys per second you can test
 ghashpersec = float(0.7) #Gigahash per second you can output doing normal BTC mining.
 
+#If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
+enableBTCE = False
+
+#And flag which coins you want to sell as they come in.
+sellLTC = False
+sellNMC = False
+sellTRC = False
+sellPPC = False
+sellNVC = False
+
+#Now edit the file called 'key.sample' to contain your api key, your secret,
+#and a nonce on three separate lines. If you haven't used the key before, a
+#nonce of '100' #should be fine. Rename 'key.sample' to 'key'.
+
+
+
+
+
+
+
 
 #-----------
 #Hopefully nothing below this needs editing.
 #-----------
+
+def sellCoin(coin, btceapi):
+    r = t.getInfo()
+    balance = getattr(r, 'balance_'+coin)
+    #testing with 1%...
+    balance = 0.01*balance
+    print balance
+    if balance > 0:
+        #i.e. if we're selling and we have some to sell... 
+        asks, bids = btceapi.getDepth(coin + '_btc')
+        tr = t.trade(coin + '_btc', 'sell',bids[0][0],balance)       
+        #This sells at the highest price someone currently has a bid lodged for.
+        #It's possible that this won't totally deplete our reserves,
 
 url = 'http://dustcoin.com/mining'
 
@@ -68,6 +105,17 @@ trcMining = False
 ppcMining = False
 nvcMining = False
 vanityMining = False
+
+if enableBTCE:
+    key_file = './key' 
+    handler = btceapi.KeyHandler(key_file)
+    key = handler.keys.keys()[0]
+    secret, nonce =  handler.keys[handler.keys.keys()[0]]
+    t = btceapi.TradeAPI(key, secret, nonce)
+
+
+
+
 while True:
     #get data from the incredible dustcoin
     usock = urllib2.urlopen(url)
@@ -190,5 +238,23 @@ while True:
         nvcMining = False
         print 'Switch to BTC'
         subprocess.Popen([btcscript])
+    
+    
+    #Now sell some coins if that's what we're into. 
+    if sellLTC:
+        sellCoin('ltc', btceapi) 
+    if sellNMC:
+        sellCoin('nmc', btceapi) 
+    if sellNVC:
+        sellCoin('nvc', btceapi) 
+    if sellTRC:
+        sellCoin('trc', btceapi) 
+    if sellPPC:
+        sellCoin('ppc', btceapi) 
+
+    #...and now save the keyfile in case the script is aborted.
+    if enableBTCE:
+        handler.save(key_file)            
+    
     time.sleep(3600)
     print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
