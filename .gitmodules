@@ -1,0 +1,3 @@
+[submodule "btce-api"]
+	path = btce-api
+	url = git@github.com:area/btce-api.git
