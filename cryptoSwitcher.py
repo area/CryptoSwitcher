@@ -62,7 +62,8 @@ ghashpersec = float(0.7) #Gigahash per second you can output doing normal BTC mi
 #If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
 enableBTCE = False
 
-#And flag which coins you want to sell as they come in.
+#And flag which coins you want to sell as they come in. These coins will only
+#sell for BTC, not for USD or any other cryptocoin.
 sellLTC = False
 sellNMC = False
 sellTRC = False
