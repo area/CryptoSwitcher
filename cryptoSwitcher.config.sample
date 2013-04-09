@@ -1,0 +1,69 @@
+#---------------------------------------
+# Cryptocurrency mining switcher config file
+# TipJar (BTC): 1NhathL6LpcgofDnHELSS6Hej6kU9xrVgp
+# Author: area
+#---------------------------------------
+
+#Enable the coins you want to mine here.
+[MineCoins]
+minebtc = True
+mineltc = True
+mineppc = False
+minenvc = False
+minetrc = False
+
+#If you want to mine vanity addresses, then set this to True
+minevanity = False
+
+#If you're merged mining some altcoins when you're bitcoin mining, set
+#the relevant coins below to 'True'
+mmNMC=True
+mmDVC=True
+mmIXC=True
+
+#You should have scripts that stop all other forms of mining, set 
+#your clocks and environment variables appropriately, and start
+# mining the appropriate coin. I have these called 'litecoin.sh',
+# 'bitcoin.sh' etc., but edit and/or replace these as you see fit.
+#Any coins you aren't mining you can just leave blank.
+
+[Scripts]
+ltcscript = './litecoin.sh'
+btcscript = './bitcoin.sh'
+vanityscript = ''
+ppcscript = ''
+nvcscript = ''
+trcscript = ''
+
+[Misc]
+#Set the threshold where we move from BTC to other MMCs, assuming that 
+#BTC has a profitability of 100
+threshold = 105
+#In an ideal world, this would be 100 i.e. as soon as it's more profitable
+#to mine another coin, stop mining BTC. But I've given BTC a little 
+#extra edge here, just because of convenience i.e. the time and effort
+#required to turn altcoins into BTC.
+
+#And now some information to calculate Vanity Address mining profitability.
+#The figures that go in here depend on your hardware. If you're not doing
+#vanity mining, you can leave these blank.
+#Gigakeys per second you can test
+gkeypersec = 0.05
+#Gigahash per second you can output doing normal BTC mining.
+ghashpersec = 0.7 
+
+[Sell]
+#If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
+enableBTCE = False
+
+#And flag which coins you want to sell as they come in. These coins will only
+#sell for BTC, not for USD or any other cryptocoin.
+sellLTC = False
+sellNMC = False
+sellTRC = False
+sellPPC = False
+sellNVC = False
+#Now edit the file called 'key.sample' to contain your api key, your secret,
+#and a nonce on three separate lines. If you haven't used the key before, a
+#nonce of '100' should be fine. Rename 'key.sample' to 'key'.
+
