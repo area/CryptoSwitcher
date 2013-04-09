@@ -11,7 +11,9 @@ mineltc = True
 mineppc = False
 minenvc = False
 minetrc = False
-
+minebte = False
+minesc = False
+minefrc=False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
@@ -28,14 +30,22 @@ mmIXC=True
 #Any coins you aren't mining you can just leave blank.
 
 [Scripts]
-ltcscript = './litecoin.sh'
-btcscript = './bitcoin.sh'
-vanityscript = ''
-ppcscript = ''
-nvcscript = ''
-trcscript = ''
-
+ltcscript = ./litecoin.sh
+btcscript = ./bitcoin.sh
+vanityscript = 
+ppcscript = 
+nvcscript = 
+trcscript = 
+scscript = 
+frcscript = 
+btescript =
 [Misc]
+#What source for our data should we use? ChooseCoin is probably better,
+#in that it lists more coins.
+source=coinchoose
+#source=dustcoin
+
+
 #Set the threshold where we move from BTC to other MMCs, assuming that 
 #BTC has a profitability of 100
 threshold = 105
@@ -63,6 +73,7 @@ sellNMC = False
 sellTRC = False
 sellPPC = False
 sellNVC = False
+
 #Now edit the file called 'key.sample' to contain your api key, your secret,
 #and a nonce on three separate lines. If you haven't used the key before, a
 #nonce of '100' should be fine. Rename 'key.sample' to 'key'.

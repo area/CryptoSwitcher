@@ -9,27 +9,59 @@ sys.path.insert(0, './btce-api/')
 import btceapi
 import ConfigParser
 
+import simplejson
+
+#-----------
+#Hopefully nothing below this needs editing.
+#-----------
+
+class Coin:
+    def __init__(self, name):
+        self.ratio=0 #assume totally unprofitable unless otherwise shown to be the case.
+        self.willingToMine = False
+        self.miningNow = False
+        self.willingToSell = False
+        self.command = '' #the command that is run when we want to mine this coin.
+        self.name = name
+
+coins = {}
+coins['btc'] =  Coin('Bitcoin')
+coins['bte'] =  Coin('Bytecoin')
+coins['dvc'] =  Coin('Devcoin')
+coins['frc'] =  Coin('Freicoin')
+coins['ixc'] =  Coin('IXCoin')
+coins['ltc'] =  Coin('Litecoin')
+coins['nmc'] =  Coin('NameCoin')
+coins['ppc'] =  Coin('PPCoin')
+coins['nvc'] =  Coin('NovaCoin')
+coins['sc'] =  Coin('SolidCoin')
+coins['trc'] =  Coin('TerraCoin')
+#Kind of an alternate coin...
+coins['vanity'] = Coin('Vanity Mining')
 
 #Read in config file
 Config = ConfigParser.ConfigParser()
 Config.read('./cryptoSwitcher.config')
 
 #Enable the coins you want to mine here.
-minebtc = Config.getboolean('MineCoins','minebtc')
-mineltc = Config.getboolean('MineCoins','mineltc')
-mineppc = Config.getboolean('MineCoins','mineppc')
-minenvc = Config.getboolean('MineCoins','minenvc')
-minetrc = Config.getboolean('MineCoins','minetrc')
+coins['btc'].willingToMine = Config.getboolean('MineCoins','minebtc')
+coins['ltc'].willingToMine = Config.getboolean('MineCoins','mineltc')
+coins['ppc'].willingToMine = Config.getboolean('MineCoins','mineppc')
+coins['nvc'].willingToMine = Config.getboolean('MineCoins','minenvc')
+coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
+coins['sc'].willingToMine = Config.getboolean('MineCoins','minesc')
+coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
+coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
 
 #Mine vanity addresses
-minevanity = Config.get('MineCoins','minevanity')
+coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
 
 #If you're merged mining some altcoins when you're bitcoin mining, set
 #the relevant coins below to 'True'
 
-mmNMC=Config.getboolean('MineCoins','mmNMC')
-mmDVC=Config.getboolean('MineCoins','mmDVC')
-mmIXC=Config.getboolean('MineCoins','mmIXC')
+coins['nmc'].willingToMine=Config.getboolean('MineCoins','mmNMC')
+coins['dvc'].willingToMine=Config.getboolean('MineCoins','mmDVC')
+coins['ixc'].willingToMine=Config.getboolean('MineCoins','mmIXC')
 
 #You should have scripts that stop all other forms of mining, set 
 #your clocks and environment variables appropriately, and start
@@ -38,16 +70,19 @@ mmIXC=Config.getboolean('MineCoins','mmIXC')
 
 #Any coins you aren't mining you can just leave blank.
 
-btcscript=Config.get('Scripts','btcscript')
-ltcscript=Config.get('Scripts','ltcscript')
-vanityscript=Config.get('Scripts','vanityscript')
-ppcscript=Config.get('Scripts','ppcscript')
-nvcscript=Config.get('Scripts','nvcscript')
-trcscript=Config.get('Scripts','trcscript')
+coins['btc'].command=Config.get('Scripts','btcscript')
+coins['ltc'].command=Config.get('Scripts','ltcscript')
+coins['vanity'].command=Config.get('Scripts','vanityscript')
+coins['ppc'].command=Config.get('Scripts','ppcscript')
+coins['nvc'].command=Config.get('Scripts','nvcscript')
+coins['trc'].command=Config.get('Scripts','trcscript')
+coins['sc'].command=Config.get('Scripts','scscript')
+coins['bte'].command=Config.get('Scripts','btescript')
 
+source = Config.get('Misc','source')
 #Set the threshold where we move from BTC to other MMCs, assuming that 
 #BTC has a profitability of 100
-threshold = Config.get('Misc','threshold')
+threshold = float(Config.get('Misc','threshold'))
 #In an ideal world, this would be 100 i.e. as soon as it's more profitable
 #to mine another coin, stop mining BTC. But I've given BTC a little 
 #extra edge here, just because of convenience i.e. the time and effort
@@ -63,26 +98,12 @@ enableBTCE = Config.getboolean('Sell','enableBTCE')
 
 #And flag which coins you want to sell as they come in. These coins will only
 #sell for BTC, not for USD or any other cryptocoin.
-sellLTC = Config.getboolean('Sell','sellLTC')
-sellNMC = Config.getboolean('Sell','sellNMC')
-sellTRC = Config.getboolean('Sell','sellTRC')
-sellPPC = Config.getboolean('Sell','sellPPC')
-sellNVC = Config.getboolean('Sell','sellNVC')
+coins['ltc'].willingToSell = Config.getboolean('Sell','sellLTC')
+coins['nmc'].willingToSell= Config.getboolean('Sell','sellNMC')
+coins['trc'].willingToSell= Config.getboolean('Sell','sellTRC')
+coins['ppc'].willingToSell= Config.getboolean('Sell','sellPPC')
+coins['nvc'].willingToSell= Config.getboolean('Sell','sellNVC')
 
-#Now edit the file called 'key.sample' to contain your api key, your secret,
-#and a nonce on three separate lines. If you haven't used the key before, a
-#nonce of '100' should be fine. Rename 'key.sample' to 'key'.
-
-
-
-
-
-
-
-
-#-----------
-#Hopefully nothing below this needs editing.
-#-----------
 
 def sellCoin(coin, tradeapi):
     r = tradeapi.getInfo()
@@ -95,15 +116,6 @@ def sellCoin(coin, tradeapi):
         #It's possible that this won't totally deplete our reserves, but any 
         #unsold immediately will be left on the book, and will probably sell shortly.
 
-url = 'http://dustcoin.com/mining'
-
-btcMining = False
-ltcMining = False
-trcMining = False
-ppcMining = False
-nvcMining = False
-vanityMining = False
-
 if enableBTCE:
     key_file = './key' 
     handler = btceapi.KeyHandler(key_file)
@@ -111,63 +123,63 @@ if enableBTCE:
     secret, nonce =  handler.keys[handler.keys.keys()[0]]
     authedAPI = btceapi.TradeAPI(key, secret, nonce)
 
-
-
-
 while True:
-    #get data from the incredible dustcoin
-    usock = urllib2.urlopen(url)
-    data = usock.read()
-    usock.close()
-    soup = BeautifulSoup(data)
+    if source=='coinchoose':
+        #Then we're getting data from coinchoose
 
-    coins = soup.findAll('tr',{ "class":"coin" })
-    i = 0
-    
-    
-    ltcprofit = 0
-    ppcprofit = 0
-    trcproft=0
-    nvcprofit=0
-    vanityprof =0
-    nmcprofit=0
-    ixcprofit=0
-    dvcprofit=0
-    btcprofit = float(threshold)
-    
-    for coinrow in coins:
-        coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
-        if profit =='?': profit = 0
-        #No BTC here, because mining BTC is always 100% compared to BTC
-        if coinName == "Litecoin" and mineltc:
-            ltcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "PPCoin" and mineppc:
-            ppcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "Terracoin" and minetrc:
-            trcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "NovaCoin" and minenvc:
-            nvcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "Namecoin" and mmNMC:
-            nmcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "Devcoin" and mmDVC:
-            dvcprofit = float(profit)
-            print coinName, profit
-        elif coinName == "Ixcoin" and mmIXC:
-            ixcprofit = float(profit)
-            print coinName, profit
-        i+=1
-  
-    #Now work out how profitable btc mining is, if we're doing any merged mining
-    btcprofit +=nmcprofit + dvcprofit + ixcprofit
-    print "Bitcoin:", btcprofit
+        req = urllib2.Request("http://www.coinchoose.com/api.php")
+        opener = urllib2.build_opener()
+        f = opener.open(req)
+        output = simplejson.load(f)
+        for item in output:
+            coins[item['symbol'].lower()].ratio = float(item['ratio'])
+        coins['btc'].ratio = threshold
+
+    elif source=='dustcoin':
+        coins['btc'].ratio = threshold
+        #get data from dustcoin
+        url = 'http://dustcoin.com/mining'
+        usock = urllib2.urlopen(url)
+        data = usock.read()
+        usock.close()
+        soup = BeautifulSoup(data)
+
+        tablecoins = soup.findAll('tr',{ "class":"coin" })
+        i = 0
+        
+        for coinrow in tablecoins:
+            coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
+            if profit =='?': profit = 0
+            #No BTC here, because mining BTC is always 100% compared to BTC
+            if coinName == "Litecoin":
+                coins['ltc'].ratio = float(profit)
+            elif coinName == "PPCoin":
+                coins['ppc'].ratio = float(profit)
+            elif coinName == "Terracoin":
+                coins['trc'].ratio = float(profit)
+            elif coinName == "NovaCoin":
+                coins['nvc'].ratio = float(profit)
+            elif coinName == "Namecoin":
+                coins['nmc'].ratio = float(profit)
+            elif coinName == "Devcoin":
+                coins['dvc'].ratio = float(profit)
+            elif coinName == "Ixcoin":
+                coins['ixc'].ratio = float(profit)
+            i+=1
+    else:
+        print 'Invalid source given. Exiting'
+        exit()
+
+    #Now work out how profitable btc mining really is, if we're doing any merged mining
+    if coins['nmc'].willingToMine:
+        coins['btc'].ratio +=coins['nmc'].ratio
+    if coins['dvc'].willingToMine:
+        coins['btc'].ratio +=coins['dvc'].ratio
+    if coins['ixc'].willingToMine:
+        coins['btc'].ratio +=coins['ixc'].ratio
 
     #Now get data for vanity mining
-    if minevanity:
+    if coins['vanity'].willingToMine:
         vanityDataValid = True
         try:
             usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value')
@@ -190,77 +202,32 @@ while True:
             vanitybtcsec = gkeypersec * float(btcpergkey)
             miningbtcsec = ghashpersec * float(btcperghash)
             vanityprof = vanitybtcsec / miningbtcsec * 100
+            coins['vanity'].ratio = vanityprof
             print 'Vanity Mining', vanityprof
     
-    bestprof = np.amax([float(btcprofit),float(vanityprof),float(ltcprofit),float(trcprofit),float(ppcprofit), float(nvcprofit)])
-    print 'best:',bestprof
-    if bestprof == ltcprofit and ltcMining == False:
-        ltcMining = True
-        btcMining = False
-        vanityMining = False
-        ppcMining=False
-        trcMining=False
-        nvcMining = False
-        print 'Switch to LTC'
-        subprocess.Popen(ltcscript, shell=True)
-    elif bestprof == vanityprof and vanityMining == False:
-        ltcMining = False
-        btcMining = False
-        vanityMining = True
-        ppcMining=False
-        trcMining=False
-        nvcMining = False
-        print 'Switch to Vanity'
-        subprocess.Popen([vanityscript],shell=True)
-    elif bestprof == ppcprofit and ppcMining==False:
-        ltcMining = False
-        btcMining = False
-        vanityMining = False
-        ppcMining=True
-        trcMining=False
-        nvcMining = False
-        print 'Switch to PPC'
-        subprocess.Popen([ppcscript],shell=True)
-    elif bestprof == trcprofit and trcMining==False:
-        ltcMining = False
-        btcMining = False
-        vanityMining = False
-        ppcMining=False
-        trcMining=True
-        nvcMining = False
-        print 'Switch to TRC'
-        subprocess.Popen([trcscript],shell=True)
-    elif bestprof == nvcprofit and nvcMining==False:
-        ltcMining = False
-        btcMining = False
-        vanityMining = False
-        ppcMining=False
-        trcMining=False
-        nvcMining = True
-        print 'Switch to NVC'
-        subprocess.Popen([nvcscript],shell=True)
-    elif bestprof == btcprofit and btcMining==False:
-        ltcMining = False
-        btcMining = True
-        vanityMining = False
-        trcMining=False
-        ppcMining = False
-        nvcMining = False
-        print 'Switch to BTC'
-        subprocess.Popen([btcscript],shell=True)
+    #Now find the best profit coin
+    bestcoin = 'btc'
+    bestprof = 0
+    for abbreviation, c in coins.items():
+        print coins[abbreviation].name, ':', c.ratio
+        if c.ratio > bestprof and c.willingToMine:
+            bestcoin = abbreviation
+            bestprof=c.ratio
+    print 'best:',bestprof,'mining',coins[bestcoin].name
+   
     
-    
-    #Now sell some coins if that's what we're into. 
-    if sellLTC:
-        sellCoin('ltc', authedAPI) 
-    if sellNMC:
-        sellCoin('nmc', authedAPI) 
-    if sellNVC:
-        sellCoin('nvc', authedAPI) 
-    if sellTRC:
-        sellCoin('trc', authedAPI) 
-    if sellPPC:
-        sellCoin('ppc', authedAPI) 
+    if coins[bestcoin].miningNow == False:
+        #i.e. if we're not already mining the best coin
+        print 'Switch to',coins[bestcoin].name
+        for abbreviation, c in coins.items():
+            c.miningNow = False
+        coins[bestcoin].miningNow = True
+        subprocess.Popen(coins[bestcoin].command)
+
+    #Sell some coins if that's what we're into
+    for abbreviation, c in coins.items():
+        if c.willingToSell:
+            sellCoin(abbreviation, authedAPI)
 
     #...and now save the keyfile in case the script is aborted.
     if enableBTCE:
