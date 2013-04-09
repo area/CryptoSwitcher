@@ -72,7 +72,7 @@ sellNVC = False
 
 #Now edit the file called 'key.sample' to contain your api key, your secret,
 #and a nonce on three separate lines. If you haven't used the key before, a
-#nonce of '100' #should be fine. Rename 'key.sample' to 'key'.
+#nonce of '100' should be fine. Rename 'key.sample' to 'key'.
 
 
 
@@ -85,18 +85,16 @@ sellNVC = False
 #Hopefully nothing below this needs editing.
 #-----------
 
-def sellCoin(coin, btceapi):
-    r = t.getInfo()
+def sellCoin(coin, tradeapi):
+    r = tradeapi.getInfo()
     balance = getattr(r, 'balance_'+coin)
-    #testing with 1%...
-    balance = 0.01*balance
-    print balance
     if balance > 0:
         #i.e. if we're selling and we have some to sell... 
         asks, bids = btceapi.getDepth(coin + '_btc')
-        tr = t.trade(coin + '_btc', 'sell',bids[0][0],balance)       
+        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0],balance)       
         #This sells at the highest price someone currently has a bid lodged for.
-        #It's possible that this won't totally deplete our reserves,
+        #It's possible that this won't totally deplete our reserves, but any 
+        #unsold immediately will be left on the book, and will probably sell shortly.
 
 url = 'http://dustcoin.com/mining'
 
@@ -112,7 +110,7 @@ if enableBTCE:
     handler = btceapi.KeyHandler(key_file)
     key = handler.keys.keys()[0]
     secret, nonce =  handler.keys[handler.keys.keys()[0]]
-    t = btceapi.TradeAPI(key, secret, nonce)
+    authedAPI = btceapi.TradeAPI(key, secret, nonce)
 
 
 
@@ -132,7 +130,7 @@ while True:
     ppcprofit = 0
     trcproft=0
     nvcprofit=0
-    vanityprofit =0
+    vanityprof =0
     nmcprofit=0
     ixcprofit=0
     dvcprofit=0
@@ -171,17 +169,29 @@ while True:
 
     #Now get data for vanity mining
     if minevanity:
-        usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value')
-        btcperghash = usock.read()
-        usock.close()
-        usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/vanitypool-value')
-        btcpergkey = usock.read()
-        usock.close()
-        #Now put vanity mining in terms of BTC mining. 
-        vanitybtcsec = gkeypersec * float(btcpergkey)
-        miningbtcsec = ghashpersec * float(btcperghash)
-        vanityprof = vanitybtcsec / miningbtcsec * 100
-        print 'Vanity Mining', vanityprof
+        vanityDataValid = True
+        try:
+            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value')
+            btcperghash = usock.read()
+            usock.close()
+        except urllib2.URLError, e:
+            print "There was an error: ,", e
+            vanityDataValid = False
+
+        try:
+            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/vanitypool-value')
+            btcpergkey = usock.read()
+            usock.close()
+        except urllib2.URLError, e:
+            print "There was an error: ,", e
+            vanityDataValid = False
+            
+        if vanityDataValid:
+            #Now put vanity mining in terms of BTC mining. 
+            vanitybtcsec = gkeypersec * float(btcpergkey)
+            miningbtcsec = ghashpersec * float(btcperghash)
+            vanityprof = vanitybtcsec / miningbtcsec * 100
+            print 'Vanity Mining', vanityprof
     
     bestprof = np.amax([float(btcprofit),float(vanityprof),float(ltcprofit),float(trcprofit),float(ppcprofit), float(nvcprofit)])
     print 'best:',bestprof
@@ -243,15 +253,15 @@ while True:
     
     #Now sell some coins if that's what we're into. 
     if sellLTC:
-        sellCoin('ltc', btceapi) 
+        sellCoin('ltc', authedAPI) 
     if sellNMC:
-        sellCoin('nmc', btceapi) 
+        sellCoin('nmc', authedAPI) 
     if sellNVC:
-        sellCoin('nvc', btceapi) 
+        sellCoin('nvc', authedAPI) 
     if sellTRC:
-        sellCoin('trc', btceapi) 
+        sellCoin('trc', authedAPI) 
     if sellPPC:
-        sellCoin('ppc', btceapi) 
+        sellCoin('ppc', authedAPI) 
 
     #...and now save the keyfile in case the script is aborted.
     if enableBTCE:
