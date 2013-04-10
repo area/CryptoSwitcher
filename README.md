@@ -39,7 +39,8 @@ API key and secret to the file `key.sample` and rename it to `key`.
 Thanks
 ---
 Dustcoin and fizzisist, for doing most of the heavy-lifting of the data,
-and Alan McIntyre for making the BTC-API used here.
+and Alan McIntyre for making the BTC-API used here. sal002 also deserves
+thanks for http://www.coinchoose.com.
 
 Tips
 ---
@@ -53,3 +54,4 @@ tipping the other people whose work is used here:
 * Dustcoin: `1F6fV4U2xnpAuKtmQD6BWpK3EuRosKzF8U` at time of writing, see http://dustcoin.com/donate for latest
 * Fizzisist: `122LV3CNADj1yHU2tFPEhcCWR5QbfMzNcm` at time of writing, see http://www.fizzisist.com for latest
 * Alan McIntyre : `16vnh6gwFYLGneBa8JUk7NaXpEt3Qojqs1` at time of writing, see https://github.com/alanmcintyre/btce-api
+* sal002: Sign up for Vircurex through the referral link on http://www.coinchoose.com

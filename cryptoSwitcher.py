@@ -182,7 +182,7 @@ while True:
     if coins['vanity'].willingToMine:
         vanityDataValid = True
         try:
-            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value')
+            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value',timeout=1)
             btcperghash = usock.read()
             usock.close()
         except urllib2.URLError, e:
@@ -190,7 +190,7 @@ while True:
             vanityDataValid = False
 
         try:
-            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/vanitypool-value')
+            usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/vanitypool-value',timeout=1)
             btcpergkey = usock.read()
             usock.close()
         except urllib2.URLError, e:
