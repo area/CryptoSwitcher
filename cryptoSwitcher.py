@@ -185,22 +185,24 @@ while True:
             usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/bitcoin-value',timeout=1)
             btcperghash = usock.read()
             usock.close()
-        except urllib2.URLError, e:
+            btcperghash = float(btcperghash)
+        except (urllib2.URLError, ValueError) as  e:
             print "There was an error: ,", e
             vanityDataValid = False
 
         try:
             usock = urllib2.urlopen('http://www.fizzisist.com/mining-value/api/vanitypool-value',timeout=1)
             btcpergkey = usock.read()
+            btcpergkey = float(btcpergkey)
             usock.close()
-        except urllib2.URLError, e:
+        except (urllib2.URLError, ValueError) as  e:
             print "There was an error: ,", e
             vanityDataValid = False
             
         if vanityDataValid:
             #Now put vanity mining in terms of BTC mining. 
-            vanitybtcsec = gkeypersec * float(btcpergkey)
-            miningbtcsec = ghashpersec * float(btcperghash)
+            vanitybtcsec = gkeypersec * btcpergkey
+            miningbtcsec = ghashpersec * btcperghash
             vanityprof = vanitybtcsec / miningbtcsec * 100
             coins['vanity'].ratio = vanityprof
             print 'Vanity Mining', vanityprof
