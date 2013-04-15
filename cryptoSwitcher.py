@@ -10,6 +10,7 @@ import btceapi
 import ConfigParser
 
 import simplejson
+import socket
 
 #-----------
 #Hopefully nothing below this needs editing.
@@ -228,7 +229,11 @@ while True:
 
     #Sell some coins if that's what we're into
     for abbreviation, c in coins.items():
-        if c.willingToSell:
+        if c.willingToSell and c.miningNow:
+            #i.e. if we're willing to sell it AND it's still worth more than BTC - 
+            #with pool payout delays and wild exchange swings, while it might be
+            #profitable to have mined it, we didn't sell it quickly enough. This
+            #keeps hold of the coin until you've made a decision.
             sellCoin(abbreviation, authedAPI)
 
     #...and now save the keyfile in case the script is aborted.
