@@ -109,8 +109,8 @@ coins['nvc'].willingToSell= Config.getboolean('Sell','sellNVC')
 def sellCoin(coin, tradeapi):
     r = tradeapi.getInfo()
     balance = getattr(r, 'balance_'+coin)
-    if balance > 0:
-        #i.e. if we're selling and we have some to sell... 
+    if balance > 0.1:
+        #i.e. if we're selling and we have some to sell that's larger than the minimum order...
         asks, bids = btceapi.getDepth(coin + '_btc')
         tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0],balance)       
         #This sells at the highest price someone currently has a bid lodged for.
