@@ -121,7 +121,11 @@ coins['ixc'].willingToSell= Config.getboolean('Sell','sellIXC')
 
 def sellCoinBTCE(coin, tradeapi):
     r = tradeapi.getInfo()
-    balance = getattr(r, 'balance_'+coin)
+    try:
+        balance = getattr(r, 'balance_'+coin)
+    except:
+        #probably a coin that BTCE doesn't have an exchange for, so just return
+        return
     if balance > 0.1:
         #i.e. if we're selling and we have some to sell that's larger than the minimum order...
         asks, bids = btceapi.getDepth(coin + '_btc')
@@ -132,7 +136,11 @@ def sellCoinBTCE(coin, tradeapi):
 
 def sellCoinVircurex(coin):
     pair = vircurexapi.Pair(coin+'_btc')
-    bid = pair.highest_bid
+    try:
+        bid = pair.highest_bid
+    except:
+        #probably a coin that Vircurex doesn't have an exchange for, so just return
+        return
     account = vircurexapi.Account(vircurexUsername, vircurexSecret)
     balance = account.balance(coin.upper())
     if balance >= 0.1:
@@ -250,6 +258,8 @@ while True:
         subprocess.Popen(coins[bestcoin].command)
 
     #Sell some coins if that's what we're into
+    sellCoinBTCE('ttt',authedAPI)
+    sellCoinVircurex('ttt')
     for abbreviation, c in coins.items():
         if c.willingToSell and (c.miningNow or c.merged) and enableBTCE:
             #i.e. if we're willing to sell it AND it's still worth more than BTC - 
