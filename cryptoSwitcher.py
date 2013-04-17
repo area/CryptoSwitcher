@@ -7,6 +7,9 @@ import sys
 #Ugly hack so git submodule init is adequate.
 sys.path.insert(0, './btce-api/')
 import btceapi
+sys.path.insert(0, './pyvircurex/')
+import vircurex as vircurexapi
+
 import ConfigParser
 
 import simplejson
@@ -97,6 +100,10 @@ ghashpersec = float(Config.get('Misc','ghashpersec')) #Gigahash per second you c
 #If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
 enableBTCE = Config.getboolean('Sell','enableBTCE')
 
+enableVircurex = Config.getboolean('Sell','enableVircurex')
+vircurexSecret = Config.get('Sell','vircurexSecret')
+vircurexUsername = Config.get('Sell','vircurexUsername')
+
 #And flag which coins you want to sell as they come in. These coins will only
 #sell for BTC, not for USD or any other cryptocoin.
 coins['ltc'].willingToSell = Config.getboolean('Sell','sellLTC')
@@ -104,9 +111,11 @@ coins['nmc'].willingToSell= Config.getboolean('Sell','sellNMC')
 coins['trc'].willingToSell= Config.getboolean('Sell','sellTRC')
 coins['ppc'].willingToSell= Config.getboolean('Sell','sellPPC')
 coins['nvc'].willingToSell= Config.getboolean('Sell','sellNVC')
+coins['dvc'].willingToSell= Config.getboolean('Sell','sellDVC')
+coins['ixc'].willingToSell= Config.getboolean('Sell','sellIXC')
 
 
-def sellCoin(coin, tradeapi):
+def sellCoinBTCE(coin, tradeapi):
     r = tradeapi.getInfo()
     balance = getattr(r, 'balance_'+coin)
     if balance > 0.1:
@@ -116,6 +125,15 @@ def sellCoin(coin, tradeapi):
         #This sells at the highest price someone currently has a bid lodged for.
         #It's possible that this won't totally deplete our reserves, but any 
         #unsold immediately will be left on the book, and will probably sell shortly.
+
+def sellCoinVircurex(coin):
+    pair = vircurexapi.Pair(coin+'_btc')
+    bid = pair.highest_bid
+    account = vircurexapi.Account(vircurexUsername, vircurexSecret)
+    balance = account.balance(coin.upper())
+    if balance >= 0.1:
+        order = account.sell(coin.upper(),balance, 'BTC', bid)
+        account.release_order(order['orderid'])
 
 if enableBTCE:
     key_file = './key' 
@@ -229,15 +247,19 @@ while True:
 
     #Sell some coins if that's what we're into
     for abbreviation, c in coins.items():
-        if c.willingToSell and c.miningNow:
+        if c.willingToSell and c.miningNow and enableBTCE:
             #i.e. if we're willing to sell it AND it's still worth more than BTC - 
             #with pool payout delays and wild exchange swings, while it might be
             #profitable to have mined it, we didn't sell it quickly enough. This
             #keeps hold of the coin until you've made a decision.
-            sellCoin(abbreviation, authedAPI)
+            sellCoinBTCE(abbreviation, authedAPI)
+        #elif c.willingToSell and c.miningNow and enableVircurex:
+        if c.willingToSell and enableVircurex and c.miningNow:
+            sellCoinVircurex(abbreviation)
 
     #...and now save the keyfile in case the script is aborted.
     if enableBTCE:
+        handler.setNextNonce(key,time.time()) #Thanks, jsorchik
         handler.save(key_file)            
     print 'Sleeping for 1 hour'
     time.sleep(3600)

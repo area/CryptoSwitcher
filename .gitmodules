@@ -1,3 +1,6 @@
 [submodule "btce-api"]
 	path = btce-api
 	url = git@github.com:area/btce-api.git
+[submodule "pyvircurex"]
+	path = pyvircurex
+	url = git://github.com/area/pyvircurex.git

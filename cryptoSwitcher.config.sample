@@ -45,7 +45,6 @@ btescript =
 source=coinchoose
 #source=dustcoin
 
-
 #Set the threshold where we move from BTC to other MMCs, assuming that 
 #BTC has a profitability of 100
 threshold = 105
@@ -65,6 +64,10 @@ ghashpersec = 0.7
 [Sell]
 #If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
 enableBTCE = False
+#or sell on VirCurEx
+enableVircurex = False
+vircurexSecret = 
+vircurexUsername = 
 
 #And flag which coins you want to sell as they come in. These coins will only
 #sell for BTC, not for USD or any other cryptocoin.
@@ -73,8 +76,13 @@ sellNMC = False
 sellTRC = False
 sellPPC = False
 sellNVC = False
+sellIXC = True
+sellDVC = True
 
 #Now edit the file called 'key.sample' to contain your api key, your secret,
-#and a nonce on three separate lines. If you haven't used the key before, a
-#nonce of '100' should be fine. Rename 'key.sample' to 'key'.
+#and a nonce on three separate lines if you're using BTCE. If you haven't used
+#the key before, a nonce of '100' should be fine. Rename 'key.sample' to 'key'.
 
+#if you're using VirCurEx, then put your secret word here. Currently, this is the
+#for every API function.
+vircurexWord = secretWord
