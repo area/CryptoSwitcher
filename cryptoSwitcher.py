@@ -24,6 +24,7 @@ class Coin:
         self.ratio=0 #assume totally unprofitable unless otherwise shown to be the case.
         self.willingToMine = False
         self.miningNow = False
+        self.merged = False
         self.willingToSell = False
         self.command = '' #the command that is run when we want to mine this coin.
         self.name = name
@@ -32,10 +33,13 @@ coins = {}
 coins['btc'] =  Coin('Bitcoin')
 coins['bte'] =  Coin('Bytecoin')
 coins['dvc'] =  Coin('Devcoin')
+coins['dvc'].merged = True
 coins['frc'] =  Coin('Freicoin')
 coins['ixc'] =  Coin('IXCoin')
+coins['ixc'].merged = True
 coins['ltc'] =  Coin('Litecoin')
 coins['nmc'] =  Coin('NameCoin')
+coins['nmc'].merged = True
 coins['ppc'] =  Coin('PPCoin')
 coins['nvc'] =  Coin('NovaCoin')
 coins['sc'] =  Coin('SolidCoin')
@@ -247,14 +251,14 @@ while True:
 
     #Sell some coins if that's what we're into
     for abbreviation, c in coins.items():
-        if c.willingToSell and c.miningNow and enableBTCE:
+        if c.willingToSell and (c.miningNow or c.merged) and enableBTCE:
             #i.e. if we're willing to sell it AND it's still worth more than BTC - 
             #with pool payout delays and wild exchange swings, while it might be
             #profitable to have mined it, we didn't sell it quickly enough. This
             #keeps hold of the coin until you've made a decision.
             sellCoinBTCE(abbreviation, authedAPI)
         #elif c.willingToSell and c.miningNow and enableVircurex:
-        if c.willingToSell and enableVircurex and c.miningNow:
+        if c.willingToSell and enableVircurex and (c.miningNow or c.merged):
             sellCoinVircurex(abbreviation)
 
     #...and now save the keyfile in case the script is aborted.
