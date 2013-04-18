@@ -86,6 +86,7 @@ coins['nvc'].command=Config.get('Scripts','nvcscript')
 coins['trc'].command=Config.get('Scripts','trcscript')
 coins['sc'].command=Config.get('Scripts','scscript')
 coins['bte'].command=Config.get('Scripts','btescript')
+coins['frc'].command=Config.get('Scripts','frcscript')
 
 source = Config.get('Misc','source')
 #Set the threshold where we move from BTC to other MMCs, assuming that 
