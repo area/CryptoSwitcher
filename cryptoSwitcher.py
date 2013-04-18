@@ -226,7 +226,7 @@ while True:
             btcpergkey = usock.read()
             btcpergkey = float(btcpergkey)
             usock.close()
-        except (urllib2.URLError, ValueErrorm, socket.timeout) as  e:
+        except (urllib2.URLError, ValueError, socket.timeout) as  e:
             print "There was an error: ,", e
             vanityDataValid = False
             
