@@ -28,6 +28,11 @@ class Coin:
         self.willingToSell = False
         self.command = '' #the command that is run when we want to mine this coin.
         self.name = name
+        self.cnt = 0
+        self.median = 0
+        self.m = 0
+        self.h = 0
+        self.fee = 0
 
 coins = {}
 coins['btc'] =  Coin('Bitcoin')
@@ -71,7 +76,7 @@ coins['nmc'].willingToMine=Config.getboolean('MineCoins','mmNMC')
 coins['dvc'].willingToMine=Config.getboolean('MineCoins','mmDVC')
 coins['ixc'].willingToMine=Config.getboolean('MineCoins','mmIXC')
 
-#You should have scripts that stop all other forms of mining, set 
+#You should have scripts that stop all other forms of mining, set
 #your clocks and environment variables appropriately, and start
 # mining the appropriate coin. I have these called 'litecoin.sh',
 # 'bitcoin.sh' etc., but edit and/or replace these as you see fit.
@@ -89,13 +94,21 @@ coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
 
 source = Config.get('Misc','source')
-#Set the threshold where we move from BTC to other MMCs, assuming that 
+#Set the threshold where we move from BTC to other MMCs, assuming that
 #BTC has a profitability of 100
-threshold = float(Config.get('Misc','threshold'))
-#In an ideal world, this would be 100 i.e. as soon as it's more profitable
-#to mine another coin, stop mining BTC. But I've given BTC a little 
-#extra edge here, just because of convenience i.e. the time and effort
-#required to turn altcoins into BTC.
+
+#get idle time between two profitability check cycles
+idletime = int(Config.get('Misc','idletime'))
+
+#get the coinfees
+coins['btc'].fee = float(Config.get('Fees','feebtc'))
+coins['ltc'].fee = float(Config.get('Fees','feeltc'))
+coins['ppc'].fee = float(Config.get('Fees','feeppc'))
+coins['nvc'].fee = float(Config.get('Fees','feenvc'))
+coins['trc'].fee = float(Config.get('Fees','feetrc'))
+coins['sc'].fee = float(Config.get('Fees','feesc'))
+coins['bte'].fee = float(Config.get('Fees','feebte'))
+coins['frc'].fee = float(Config.get('Fees','feefrc'))
 
 
 #And now some information to calculate Vanity Address mining profitability
@@ -130,9 +143,9 @@ def sellCoinBTCE(coin, tradeapi):
     if balance > 0.1:
         #i.e. if we're selling and we have some to sell that's larger than the minimum order...
         asks, bids = btceapi.getDepth(coin + '_btc')
-        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0],balance)       
+        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0],balance)
         #This sells at the highest price someone currently has a bid lodged for.
-        #It's possible that this won't totally deplete our reserves, but any 
+        #It's possible that this won't totally deplete our reserves, but any
         #unsold immediately will be left on the book, and will probably sell shortly.
 
 def sellCoinVircurex(coin):
@@ -149,7 +162,7 @@ def sellCoinVircurex(coin):
         account.release_order(order['orderid'])
 
 if enableBTCE:
-    key_file = './key' 
+    key_file = './key'
     handler = btceapi.KeyHandler(key_file)
     key = handler.keys.keys()[0]
     secret, nonce =  handler.keys[handler.keys.keys()[0]]
@@ -164,11 +177,9 @@ while True:
         f = opener.open(req)
         output = simplejson.load(f)
         for item in output:
-            coins[item['symbol'].lower()].ratio = float(item['ratio'])
-        coins['btc'].ratio = threshold
+            coins[item['symbol'].lower()].ratio = float(item['ratio'])-coins[item['symbol'].lower()].fee
 
     elif source=='dustcoin':
-        coins['btc'].ratio = threshold
         #get data from dustcoin
         url = 'http://dustcoin.com/mining'
         usock = urllib2.urlopen(url)
@@ -178,25 +189,57 @@ while True:
 
         tablecoins = soup.findAll('tr',{ "class":"coin" })
         i = 0
-        
+
         for coinrow in tablecoins:
             coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
             if profit =='?': profit = 0
-            #No BTC here, because mining BTC is always 100% compared to BTC
-            if coinName == "Litecoin":
-                coins['ltc'].ratio = float(profit)
+            #calculate profitabilty
+            if coinName == "Bitcoin":
+                coins['btc'].ratio = float(profit)-coins['btc'].fee
+            elif coinName == "Litecoin":
+                coins['ltc'].ratio = float(profit)-coins['ltc'].fee
             elif coinName == "PPCoin":
-                coins['ppc'].ratio = float(profit)
+                coins['ppc'].ratio = float(profit)-coins['ppc'].fee
             elif coinName == "Terracoin":
-                coins['trc'].ratio = float(profit)
+                coins['trc'].ratio = float(profit)-coins['trc'].fee
             elif coinName == "NovaCoin":
-                coins['nvc'].ratio = float(profit)
+                coins['nvc'].ratio = float(profit)-coins['nvc'].fee
             elif coinName == "Namecoin":
-                coins['nmc'].ratio = float(profit)
+                coins['nmc'].ratio = float(profit)-coins['nmc'].fee
             elif coinName == "Devcoin":
-                coins['dvc'].ratio = float(profit)
+                coins['dvc'].ratio = float(profit)-coins['dvc'].fee
             elif coinName == "Ixcoin":
-                coins['ixc'].ratio = float(profit)
+                coins['ixc'].ratio = float(profit)-coins['ixc'].fee
+            i+=1
+
+    elif source=='coinotron':
+        #get data from coinotron
+        url = 'https://coinotron.com/coinotron/AccountServlet?action=home'
+        usock = urllib2.urlopen(url)
+        data = usock.read()
+        usock.close()
+        soup = BeautifulSoup(data)
+
+        tablecoins = soup.findAll('tr')
+        i = 0
+
+        for coinrow in tablecoins:
+            coinName = coinrow.findNext('td').contents[0]
+            profit = coinrow.findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').contents[0]
+            if profit == '---' : profit = 0
+            profit = float(profit)*100
+            #calculate profitabilty
+            if coinName == "BTC":
+                coins['btc'].ratio = float(profit)-coins['btc'].fee
+            elif coinName == "PPC":
+                coins['ppc'].ratio = float(profit)-coins['ppc'].fee
+            elif coinName == "LTC":
+                coins['ltc'].ratio = float(profit)-coins['ltc'].fee
+            elif coinName == "TRC":
+                coins['trc'].ratio = float(profit)-coins['trc'].fee
+            elif coinName == "FRC":
+                coins['frc'].ratio = float(profit)-coins['frc'].fee
+                break
             i+=1
     else:
         print 'Invalid source given. Exiting'
@@ -230,26 +273,29 @@ while True:
         except (urllib2.URLError, ValueError, socket.timeout) as  e:
             print "There was an error: ,", e
             vanityDataValid = False
-            
+
         if vanityDataValid:
-            #Now put vanity mining in terms of BTC mining. 
+            #Now put vanity mining in terms of BTC mining.
             vanitybtcsec = gkeypersec * btcpergkey
             miningbtcsec = ghashpersec * btcperghash
             vanityprof = vanitybtcsec / miningbtcsec * 100
             coins['vanity'].ratio = vanityprof
             print 'Vanity Mining', vanityprof
-    
+
     #Now find the best profit coin
     bestcoin = 'btc'
     bestprof = 0
     for abbreviation, c in coins.items():
-        print coins[abbreviation].name, ':', c.ratio
+        if c.willingToMine:
+            print coins[abbreviation].name, ':', c.ratio
         if c.ratio > bestprof and c.willingToMine:
             bestcoin = abbreviation
             bestprof=c.ratio
     print 'best:',bestprof,'mining',coins[bestcoin].name
-   
-    
+    coins[bestcoin].median = ((coins[bestcoin].median * coins[bestcoin].cnt) + coins[bestcoin].ratio) / (coins[bestcoin].cnt+1)
+    coins[bestcoin].cnt = coins[bestcoin].cnt+1
+
+
     if coins[bestcoin].miningNow == False:
         #i.e. if we're not already mining the best coin
         print 'Switch to',coins[bestcoin].name
@@ -263,7 +309,7 @@ while True:
     sellCoinVircurex('ttt')
     for abbreviation, c in coins.items():
         if c.willingToSell and (c.miningNow or c.merged) and enableBTCE:
-            #i.e. if we're willing to sell it AND it's still worth more than BTC - 
+            #i.e. if we're willing to sell it AND it's still worth more than BTC -
             #with pool payout delays and wild exchange swings, while it might be
             #profitable to have mined it, we didn't sell it quickly enough. This
             #keeps hold of the coin until you've made a decision.
@@ -275,7 +321,22 @@ while True:
     #...and now save the keyfile in case the script is aborted.
     if enableBTCE:
         handler.setNextNonce(key,time.time()) #Thanks, jsorchik
-        handler.save(key_file)            
-    print 'Sleeping for 1 hour'
-    time.sleep(3600)
+        handler.save(key_file)
+
+    smedian = "Median: "
+    stime = "Time:   "
+    for abbreviation, c in coins.items():
+        if c.willingToMine:
+            coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*5, 60)
+            smedian += abbreviation.upper()
+            smedian += " = %5d |  " % (coins[abbreviation].median)
+            stime += abbreviation.upper()
+            stime += " = %2d:%02d |  " % (coins[abbreviation].h, coins[abbreviation].m)
+    #remove last three chars
+    smedian = smedian[:-4]
+    stime = stime[:-4]
+    print smedian
+    print stime
+    print 'Sleeping for %d Minutes' % (idletime)
+    time.sleep(idletime*60)
     print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
