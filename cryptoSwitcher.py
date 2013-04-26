@@ -192,7 +192,11 @@ while True:
 
         for coinrow in tablecoins:
             coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
-            if profit =='?': profit = 0
+            #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
+            try:
+                profit = float(profit)
+            except:
+                continue
             #calculate profitabilty
             if coinName == "Bitcoin":
                 coins['btc'].ratio = float(profit)-coins['btc'].fee
@@ -226,8 +230,11 @@ while True:
         for coinrow in tablecoins:
             coinName = coinrow.findNext('td').contents[0]
             profit = coinrow.findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').contents[0]
-            if profit == '---' : profit = 0
-            profit = float(profit)*100
+            #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
+            try:
+                profit = float(profit)*100
+            except:
+                continue
             #calculate profitabilty
             if coinName == "BTC":
                 coins['btc'].ratio = float(profit)-coins['btc'].fee
@@ -237,6 +244,7 @@ while True:
                 coins['ltc'].ratio = float(profit)-coins['ltc'].fee
             elif coinName == "TRC":
                 coins['trc'].ratio = float(profit)-coins['trc'].fee
+                break
             elif coinName == "FRC":
                 coins['frc'].ratio = float(profit)-coins['frc'].fee
                 break
@@ -325,6 +333,8 @@ while True:
 
     smedian = "Median: "
     stime = "Time:   "
+    median_all = 0
+    cnt_all = 0
     for abbreviation, c in coins.items():
         if c.willingToMine:
             coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*5, 60)
@@ -332,11 +342,16 @@ while True:
             smedian += " = %5d |  " % (coins[abbreviation].median)
             stime += abbreviation.upper()
             stime += " = %2d:%02d |  " % (coins[abbreviation].h, coins[abbreviation].m)
+            if coins[abbreviation].cnt > 0:
+                median_all = ((median_all * cnt_all) + (coins[abbreviation].median*coins[abbreviation].cnt)) / (cnt_all+coins[abbreviation].cnt)
+                cnt_all += coins[abbreviation].cnt
     #remove last three chars
     smedian = smedian[:-4]
     stime = stime[:-4]
     print smedian
     print stime
+    print 'Median (all): %3d' % (median_all)
+    print 'Time (all): %2d:%02d' % (divmod(cnt_all*5, 60))
     print 'Sleeping for %d Minutes' % (idletime)
     time.sleep(idletime*60)
     print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
