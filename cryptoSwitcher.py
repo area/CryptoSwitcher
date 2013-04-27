@@ -297,7 +297,7 @@ while True:
     print "-"*27
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            print "%10s: %3d (fee: %3d)" % (coins[abbreviation].name, c.ratio, -1*coins[abbreviation].fee)
+            print "%10s: %3d (fee: %3d)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee)
         if c.ratio-coins[abbreviation].fee > bestprof and c.willingToMine:
             bestcoin = abbreviation
             bestprof=c.ratio-coins[abbreviation].fee
