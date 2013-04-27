@@ -177,7 +177,7 @@ while True:
         f = opener.open(req)
         output = simplejson.load(f)
         for item in output:
-            coins[item['symbol'].lower()].ratio = float(item['ratio'])-coins[item['symbol'].lower()].fee
+            coins[item['symbol'].lower()].ratio = float(item['ratio'])
 
     elif source=='dustcoin':
         #get data from dustcoin
@@ -199,21 +199,21 @@ while True:
                 continue
             #calculate profitabilty
             if coinName == "Bitcoin":
-                coins['btc'].ratio = float(profit)-coins['btc'].fee
+                coins['btc'].ratio = float(profit)
             elif coinName == "Litecoin":
-                coins['ltc'].ratio = float(profit)-coins['ltc'].fee
+                coins['ltc'].ratio = float(profit)
             elif coinName == "PPCoin":
-                coins['ppc'].ratio = float(profit)-coins['ppc'].fee
+                coins['ppc'].ratio = float(profit)
             elif coinName == "Terracoin":
-                coins['trc'].ratio = float(profit)-coins['trc'].fee
+                coins['trc'].ratio = float(profit)
             elif coinName == "NovaCoin":
-                coins['nvc'].ratio = float(profit)-coins['nvc'].fee
+                coins['nvc'].ratio = float(profit)
             elif coinName == "Namecoin":
-                coins['nmc'].ratio = float(profit)-coins['nmc'].fee
+                coins['nmc'].ratio = float(profit)
             elif coinName == "Devcoin":
-                coins['dvc'].ratio = float(profit)-coins['dvc'].fee
+                coins['dvc'].ratio = float(profit)
             elif coinName == "Ixcoin":
-                coins['ixc'].ratio = float(profit)-coins['ixc'].fee
+                coins['ixc'].ratio = float(profit)
             i+=1
 
     elif source=='coinotron':
@@ -237,16 +237,16 @@ while True:
                 continue
             #calculate profitabilty
             if coinName == "BTC":
-                coins['btc'].ratio = float(profit)-coins['btc'].fee
+                coins['btc'].ratio = float(profit)
             elif coinName == "PPC":
-                coins['ppc'].ratio = float(profit)-coins['ppc'].fee
+                coins['ppc'].ratio = float(profit)
             elif coinName == "LTC":
-                coins['ltc'].ratio = float(profit)-coins['ltc'].fee
+                coins['ltc'].ratio = float(profit)
             elif coinName == "TRC":
-                coins['trc'].ratio = float(profit)-coins['trc'].fee
+                coins['trc'].ratio = float(profit)
                 break
             elif coinName == "FRC":
-                coins['frc'].ratio = float(profit)-coins['frc'].fee
+                coins['frc'].ratio = float(profit)
                 break
             i+=1
     else:
@@ -293,20 +293,23 @@ while True:
     #Now find the best profit coin
     bestcoin = 'btc'
     bestprof = 0
+    print "\n\n<<<Get best profitabilty>>>"
+    print "-"*27
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            print coins[abbreviation].name, ':', c.ratio
-        if c.ratio > bestprof and c.willingToMine:
+            print "%10s: %3d (fee: %3d)" % (coins[abbreviation].name, c.ratio, -1*coins[abbreviation].fee)
+        if c.ratio-coins[abbreviation].fee > bestprof and c.willingToMine:
             bestcoin = abbreviation
-            bestprof=c.ratio
-    print 'best:',bestprof,'mining',coins[bestcoin].name
-    coins[bestcoin].median = ((coins[bestcoin].median * coins[bestcoin].cnt) + coins[bestcoin].ratio) / (coins[bestcoin].cnt+1)
+            bestprof=c.ratio-coins[abbreviation].fee
+    print "-"*27
+    print "=> Best: %d, mining %s" % (bestprof, coins[bestcoin].name)
+    coins[bestcoin].median = ((coins[bestcoin].median * coins[bestcoin].cnt) + coins[bestcoin].ratio-coins[bestcoin].fee) / (coins[bestcoin].cnt+1)
     coins[bestcoin].cnt = coins[bestcoin].cnt+1
 
 
     if coins[bestcoin].miningNow == False:
         #i.e. if we're not already mining the best coin
-        print 'Switch to',coins[bestcoin].name
+        print '=> Switching to',coins[bestcoin].name
         for abbreviation, c in coins.items():
             c.miningNow = False
         coins[bestcoin].miningNow = True
@@ -331,13 +334,14 @@ while True:
         handler.setNextNonce(key,time.time()) #Thanks, jsorchik
         handler.save(key_file)
 
-    smedian = "Median: "
-    stime = "Time:   "
+    #create status output strings
+    smedian = "# Median: "
+    stime = "# Time:   "
     median_all = 0
     cnt_all = 0
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*5, 60)
+            coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*idletime, 60)
             smedian += abbreviation.upper()
             smedian += " = %5d |  " % (coins[abbreviation].median)
             stime += abbreviation.upper()
@@ -345,13 +349,30 @@ while True:
             if coins[abbreviation].cnt > 0:
                 median_all = ((median_all * cnt_all) + (coins[abbreviation].median*coins[abbreviation].cnt)) / (cnt_all+coins[abbreviation].cnt)
                 cnt_all += coins[abbreviation].cnt
-    #remove last three chars
+
+    #remove last chars
     smedian = smedian[:-4]
     stime = stime[:-4]
+    
+    smedian_all = '# Median (all): %5d' % (median_all)
+    stime_all = '# Time (all): %4d:%02d' % (divmod(cnt_all*idletime, 60))
+
+    #fill strings to screen width and add "#" to the end
+    smedian = "%s%s%s" % (smedian, " "*(78-len(smedian)), "#")
+    stime = "%s%s%s" % (stime, " "*(78-len(stime)), "#")
+    smedian_all = "%s%s%s" % (smedian_all, " "*(78-len(smedian_all)), "#")
+    stime_all = "%s%s%s" % (stime_all, " "*(78-len(stime_all)), "#")
+
+    #output status strings
+    print "#"*79
     print smedian
     print stime
-    print 'Median (all): %3d' % (median_all)
-    print 'Time (all): %2d:%02d' % (divmod(cnt_all*5, 60))
-    print 'Sleeping for %d Minutes' % (idletime)
+    print smedian_all
+    print stime_all
+    print "#"*79
+
+    #sleep
+    print 'Sleeping for %d Minutes...' % (idletime)
     time.sleep(idletime*60)
+    
     print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
