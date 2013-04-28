@@ -230,6 +230,9 @@ while True:
         for coinrow in tablecoins:
             coinName = coinrow.findNext('td').contents[0]
             profit = coinrow.findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').contents[0]
+            #when all coins where read, leave loop
+            if i == 5: break
+            i+=1
             #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
             try:
                 profit = float(profit)*100
@@ -244,11 +247,8 @@ while True:
                 coins['ltc'].ratio = float(profit)
             elif coinName == "TRC":
                 coins['trc'].ratio = float(profit)
-                break
             elif coinName == "FRC":
                 coins['frc'].ratio = float(profit)
-                break
-            i+=1
     else:
         print 'Invalid source given. Exiting'
         exit()
@@ -294,10 +294,11 @@ while True:
     bestcoin = 'btc'
     bestprof = 0
     print "\n\n<<<Get best profitabilty>>>"
+    print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print "-"*27
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            print "%10s: %3d (fee: %3d)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee)
+            print "%10s: %3d  (fee: %3d)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee)
         if c.ratio-coins[abbreviation].fee > bestprof and c.willingToMine:
             bestcoin = abbreviation
             bestprof=c.ratio-coins[abbreviation].fee
@@ -353,7 +354,7 @@ while True:
     #remove last chars
     smedian = smedian[:-4]
     stime = stime[:-4]
-    
+
     smedian_all = '# Median (all): %5d' % (median_all)
     stime_all = '# Time (all): %4d:%02d' % (divmod(cnt_all*idletime, 60))
 
@@ -364,7 +365,7 @@ while True:
     stime_all = "%s%s%s" % (stime_all, " "*(78-len(stime_all)), "#")
 
     #output status strings
-    print "#"*79
+    print "\n", "#"*79
     print smedian
     print stime
     print smedian_all
@@ -372,7 +373,5 @@ while True:
     print "#"*79
 
     #sleep
-    print 'Sleeping for %d Minutes...' % (idletime)
+    print '\nSleeping for %d Minutes...' % (idletime)
     time.sleep(idletime*60)
-    
-    print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
