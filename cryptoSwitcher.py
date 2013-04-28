@@ -44,6 +44,7 @@ coins['ppc'] =  Coin('PPCoin')
 coins['nvc'] =  Coin('NovaCoin')
 coins['sc'] =  Coin('SolidCoin')
 coins['trc'] =  Coin('TerraCoin')
+coins['fc'] =  Coin('FeatherCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -60,6 +61,7 @@ coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
 coins['sc'].willingToMine = Config.getboolean('MineCoins','minesc')
 coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
 coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
+coins['fc'].willingToMine = Config.getboolean('MineCoins','mineftc')
 
 #Mine vanity addresses
 coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
@@ -87,6 +89,7 @@ coins['trc'].command=Config.get('Scripts','trcscript')
 coins['sc'].command=Config.get('Scripts','scscript')
 coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
+coins['fc'].command=Config.get('Scripts','ftcscript')
 
 source = Config.get('Misc','source')
 #Set the threshold where we move from BTC to other MMCs, assuming that 
@@ -161,12 +164,14 @@ while True:
 
         req = urllib2.Request("http://www.coinchoose.com/api.php")
         opener = urllib2.build_opener()
-        f = opener.open(req)
-        output = simplejson.load(f)
-        for item in output:
-            coins[item['symbol'].lower()].ratio = float(item['ratio'])
-        coins['btc'].ratio = threshold
-
+        try:
+            f = opener.open(req)
+            output = simplejson.load(f)
+            for item in output:
+                coins[item['symbol'].lower()].ratio = float(item['ratio'])
+            coins['btc'].ratio = threshold
+        except:
+            print 'Error loading coinchoose. Use old values'
     elif source=='dustcoin':
         coins['btc'].ratio = threshold
         #get data from dustcoin
@@ -276,6 +281,6 @@ while True:
     if enableBTCE:
         handler.setNextNonce(key,time.time()) #Thanks, jsorchik
         handler.save(key_file)            
-    print 'Sleeping for 1 hour'
-    time.sleep(3600)
+    print 'Sleeping for 5 minutes'
+    time.sleep(300)
     print time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())

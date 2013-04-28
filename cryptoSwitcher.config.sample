@@ -14,6 +14,7 @@ minetrc = False
 minebte = False
 minesc = False
 minefrc=False
+mineftc=False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
@@ -39,6 +40,8 @@ trcscript =
 scscript = 
 frcscript = 
 btescript =
+ftcscript = 
+
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
 #in that it lists more coins.
