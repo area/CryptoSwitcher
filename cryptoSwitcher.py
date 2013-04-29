@@ -180,6 +180,7 @@ while True:
 
         req = urllib2.Request("http://www.coinchoose.com/api.php")
         opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', 'CryptoSwitcher')]
         try:
             f = opener.open(req)
             output = simplejson.load(f)
@@ -327,8 +328,6 @@ while True:
         subprocess.Popen(coins[bestcoin].command)
 
     #Sell some coins if that's what we're into
-    sellCoinBTCE('ttt',authedAPI)
-    sellCoinVircurex('ttt')
     for abbreviation, c in coins.items():
         if c.willingToSell and (c.miningNow or c.merged) and enableBTCE:
             #i.e. if we're willing to sell it AND it's still worth more than BTC -
