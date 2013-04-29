@@ -49,7 +49,7 @@ coins['ppc'] =  Coin('PPCoin')
 coins['nvc'] =  Coin('NovaCoin')
 coins['sc'] =  Coin('SolidCoin')
 coins['trc'] =  Coin('TerraCoin')
-coins['fc'] =  Coin('FeatherCoin')
+coins['ftc'] =  Coin('FeatherCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -66,7 +66,7 @@ coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
 coins['sc'].willingToMine = Config.getboolean('MineCoins','minesc')
 coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
 coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
-coins['fc'].willingToMine = Config.getboolean('MineCoins','mineftc')
+coins['ftc'].willingToMine = Config.getboolean('MineCoins','mineftc')
 
 #Mine vanity addresses
 coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
@@ -94,7 +94,7 @@ coins['trc'].command=Config.get('Scripts','trcscript')
 coins['sc'].command=Config.get('Scripts','scscript')
 coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
-coins['fc'].command=Config.get('Scripts','ftcscript')
+coins['ftc'].command=Config.get('Scripts','ftcscript')
 
 source = Config.get('Misc','source')
 #Set the threshold where we move from BTC to other MMCs, assuming that
@@ -114,6 +114,7 @@ coins['trc'].fee = float(Config.get('Fees','feetrc'))
 coins['sc'].fee = float(Config.get('Fees','feesc'))
 coins['bte'].fee = float(Config.get('Fees','feebte'))
 coins['frc'].fee = float(Config.get('Fees','feefrc'))
+coins['ftc'].fee = float(Config.get('Fees','feeftc'))
 
 
 #And now some information to calculate Vanity Address mining profitability

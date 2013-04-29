@@ -56,6 +56,7 @@ feetrc = 15
 feebte = 0
 feesc = 0
 feefrc = 0
+feeftc = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
