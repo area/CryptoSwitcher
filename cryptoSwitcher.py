@@ -49,6 +49,8 @@ coins['ppc'] =  Coin('PPCoin')
 coins['nvc'] =  Coin('NovaCoin')
 coins['sc'] =  Coin('SolidCoin')
 coins['trc'] =  Coin('TerraCoin')
+coins['ftc'] =  Coin('FeatherCoin')
+coins['mnc'] =  Coin('Mincoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -65,6 +67,8 @@ coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
 coins['sc'].willingToMine = Config.getboolean('MineCoins','minesc')
 coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
 coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
+coins['ftc'].willingToMine = Config.getboolean('MineCoins','mineftc')
+coins['mnc'].willingToMine = Config.getboolean('MineCoins','minemnc')
 
 #Mine vanity addresses
 coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
@@ -92,10 +96,14 @@ coins['trc'].command=Config.get('Scripts','trcscript')
 coins['sc'].command=Config.get('Scripts','scscript')
 coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
+coins['ftc'].command=Config.get('Scripts','ftcscript')
+coins['mnc'].command=Config.get('Scripts','mncscript')
 
 source = Config.get('Misc','source')
 #Set the threshold where we move from BTC to other MMCs, assuming that
 #BTC has a profitability of 100
+threshold = float(Config.get('Misc','threshold'))
+
 
 #get idle time between two profitability check cycles
 idletime = int(Config.get('Misc','idletime'))
@@ -109,6 +117,8 @@ coins['trc'].fee = float(Config.get('Fees','feetrc'))
 coins['sc'].fee = float(Config.get('Fees','feesc'))
 coins['bte'].fee = float(Config.get('Fees','feebte'))
 coins['frc'].fee = float(Config.get('Fees','feefrc'))
+coins['ftc'].fee = float(Config.get('Fees','feeftc'))
+coins['mnc'].fee = float(Config.get('Fees','feemnc'))
 
 
 #And now some information to calculate Vanity Address mining profitability
@@ -174,11 +184,16 @@ while True:
 
         req = urllib2.Request("http://www.coinchoose.com/api.php")
         opener = urllib2.build_opener()
-        f = opener.open(req)
-        output = simplejson.load(f)
-        for item in output:
-            coins[item['symbol'].lower()].ratio = float(item['ratio'])
-
+        opener.addheaders = [('User-agent', 'CryptoSwitcher')]
+        try:
+            f = opener.open(req)
+            output = simplejson.load(f)
+            for item in output:
+                coins[item['symbol'].lower()].ratio = float(item['ratio'])
+            coins['btc'].ratio = threshold
+        except Exception, e:
+            print e
+            print 'Error loading coinchoose. Use old values'
     elif source=='dustcoin':
         #get data from dustcoin
         url = 'http://dustcoin.com/mining'
@@ -317,8 +332,6 @@ while True:
         subprocess.Popen(coins[bestcoin].command)
 
     #Sell some coins if that's what we're into
-    sellCoinBTCE('ttt',authedAPI)
-    sellCoinVircurex('ttt')
     for abbreviation, c in coins.items():
         if c.willingToSell and (c.miningNow or c.merged) and enableBTCE:
             #i.e. if we're willing to sell it AND it's still worth more than BTC -
