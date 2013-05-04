@@ -51,23 +51,22 @@ mncscript =
 
 [Fees]
 feebtc = -1
-feeltc = 0
+feeltc = 4
 feeppc = 7
 feenvc = 0
-feetrc = 15
+feetrc = 12
 feebte = 0
 feesc = 0
 feefrc = 0
-feeftc = 0
+feeftc = 4
 feemnc = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
 #in that it lists more coins. Coinotron seems to be updated most frequently.
-source=coinchoose
-#source=dustcoin
-#source=coinotron
-
+#The first entry in the list has the highest priority and is used first. If the
+#site is down, the second source is used.
+source=coinchoose, dustcoin, coinotron
 
 #Idle Time (in minutes) between two checks of coin profitability.
 idletime = 5

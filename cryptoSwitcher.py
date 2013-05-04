@@ -33,6 +33,7 @@ class Coin:
         self.m = 0
         self.h = 0
         self.fee = 0
+        self.source = ''
 
 coins = {}
 coins['btc'] =  Coin('Bitcoin')
@@ -99,11 +100,8 @@ coins['frc'].command=Config.get('Scripts','frcscript')
 coins['ftc'].command=Config.get('Scripts','ftcscript')
 coins['mnc'].command=Config.get('Scripts','mncscript')
 
-source = Config.get('Misc','source')
-#Set the threshold where we move from BTC to other MMCs, assuming that
-#BTC has a profitability of 100
-threshold = float(Config.get('Misc','threshold'))
-
+#read source list
+source = [x.strip() for x in Config.get('Misc','source').split(',')]
 
 #get idle time between two profitability check cycles
 idletime = int(Config.get('Misc','idletime'))
@@ -178,95 +176,96 @@ if enableBTCE:
     secret, nonce =  handler.keys[handler.keys.keys()[0]]
     authedAPI = btceapi.TradeAPI(key, secret, nonce)
 
+cnt_all = 0
 while True:
-    if source=='coinchoose':
-        #Then we're getting data from coinchoose
+    #get data from sources
+    print "\n\n\n<<< Round %d >>>" % (cnt_all+1)
+    print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    print "getting data...",
+    #coinchoose
+    req = urllib2.Request("http://www.coinchoose.com/api.php")
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-agent', 'CryptoSwitcher')]
 
-        req = urllib2.Request("http://www.coinchoose.com/api.php")
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', 'CryptoSwitcher')]
-        try:
-            f = opener.open(req)
-            output = simplejson.load(f)
-            for item in output:
-                coins[item['symbol'].lower()].ratio = float(item['ratio'])
-            coins['btc'].ratio = threshold
-        except Exception, e:
-            print e
-            print 'Error loading coinchoose. Use old values'
-    elif source=='dustcoin':
-        #get data from dustcoin
-        url = 'http://dustcoin.com/mining'
-        usock = urllib2.urlopen(url)
-        data = usock.read()
-        usock.close()
-        soup = BeautifulSoup(data)
+    #dustcoin
+    usock = urllib2.urlopen('http://dustcoin.com/mining')
+    data = usock.read()
+    usock.close()
+    soup = BeautifulSoup(data)
+    table_dustcoin = soup.findAll('tr',{ "class":"coin" })
 
-        tablecoins = soup.findAll('tr',{ "class":"coin" })
-        i = 0
+    #coinotron
+    usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
+    data = usock.read()
+    usock.close()
+    soup = BeautifulSoup(data)
+    table_coinotron = soup.findAll('tr')
+    print "done"
 
-        for coinrow in tablecoins:
-            coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
-            #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
-            try:
-                profit = float(profit)
-            except:
-                continue
-            #calculate profitabilty
-            if coinName == "Bitcoin":
-                coins['btc'].ratio = float(profit)
-            elif coinName == "Litecoin":
-                coins['ltc'].ratio = float(profit)
-            elif coinName == "PPCoin":
-                coins['ppc'].ratio = float(profit)
-            elif coinName == "Terracoin":
-                coins['trc'].ratio = float(profit)
-            elif coinName == "NovaCoin":
-                coins['nvc'].ratio = float(profit)
-            elif coinName == "Namecoin":
-                coins['nmc'].ratio = float(profit)
-            elif coinName == "Devcoin":
-                coins['dvc'].ratio = float(profit)
-            elif coinName == "Ixcoin":
-                coins['ixc'].ratio = float(profit)
-            i+=1
+    print "decoding data...",
+    #assign data to coins
+    #loop through coins
+    for abbreviation, c in coins.items():
+        #current read marked as unsuccessful by default
+        success = 0
+        #loop trough source list. try first entry first.
+        for x in source:
+            if x=='coinchoose':
+                try:
+                    f = opener.open(req)
+                    output = simplejson.load(f)
+                    for item in output:
+                        if item['symbol'].lower()==abbreviation:
+                            coins[item['symbol'].lower()].ratio = float(item['ratio'])
+                            coins[item['symbol'].lower()].source = 'cc'
+                            success = 1
+                            break
+                except:
+                    continue
 
-    elif source=='coinotron':
-        #get data from coinotron
-        url = 'https://coinotron.com/coinotron/AccountServlet?action=home'
-        usock = urllib2.urlopen(url)
-        data = usock.read()
-        usock.close()
-        soup = BeautifulSoup(data)
+            elif x=='dustcoin':
+                try:
+                    i=0
+                    for coinrow in table_dustcoin:
+                        coinName, profit = coinrow.find('strong',text=True).text, coinrow.find('td',{"id":"profit"+str(i)}).text.replace('%','')
+                        #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
+                        try:
+                            profit = float(profit)
+                        except:
+                            continue
+                        #calculate profitabilty
+                        if coinName == coins[abbreviation].name:
+                            coins[abbreviation].ratio = float(profit)
+                            coins[abbreviation].source = 'dc'
+                            success = 1
+                            break
+                        i+=1
+                except:
+                    continue
 
-        tablecoins = soup.findAll('tr')
-        i = 0
+            elif x=='coinotron':
+                try:
+                    i = 0
+                    for coinrow in table_coinotron:
+                        coinName = coinrow.findNext('td').contents[0]
+                        profit = coinrow.findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').contents[0]
+                        #when all coins where read, leave loop
+                        if i == 5: break
+                        i+=1
+                        #convert profitability to percent
+                        profit = float(profit)*100
+                        #calculate profitabilty
+                        if coinName.lower()==abbreviation:
+                            coins[abbreviation].ratio = float(profit)
+                            coins[abbreviation].source = 'ct'
+                            success = 1
+                            break
+                        i+=1
+                except:
+                    continue
 
-        for coinrow in tablecoins:
-            coinName = coinrow.findNext('td').contents[0]
-            profit = coinrow.findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').findNext('td').contents[0]
-            #when all coins where read, leave loop
-            if i == 5: break
-            i+=1
-            #make sure the profit we read is floating value, if not, continue loop and keep old profit value until next check
-            try:
-                profit = float(profit)*100
-            except:
-                continue
-            #calculate profitabilty
-            if coinName == "BTC":
-                coins['btc'].ratio = float(profit)
-            elif coinName == "PPC":
-                coins['ppc'].ratio = float(profit)
-            elif coinName == "LTC":
-                coins['ltc'].ratio = float(profit)
-            elif coinName == "TRC":
-                coins['trc'].ratio = float(profit)
-            elif coinName == "FRC":
-                coins['frc'].ratio = float(profit)
-    else:
-        print 'Invalid source given. Exiting'
-        exit()
+            if success==1:
+                break
 
     #Now work out how profitable btc mining really is, if we're doing any merged mining
     if coins['nmc'].willingToMine:
@@ -275,6 +274,9 @@ while True:
         coins['btc'].ratio +=coins['dvc'].ratio
     if coins['ixc'].willingToMine:
         coins['btc'].ratio +=coins['ixc'].ratio
+
+    print "done"
+
 
     #Now get data for vanity mining
     if coins['vanity'].willingToMine:
@@ -308,16 +310,15 @@ while True:
     #Now find the best profit coin
     bestcoin = 'btc'
     bestprof = 0
-    print "\n\n<<<Get best profitabilty>>>"
-    print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    print "-"*27
+    print "comparing profitabilty..."
+    print "-"*36
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            print "%10s: %3d  (fee: %3d)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee)
+            print "%11s: %3d  (fee: %2d, src: %s)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee, coins[abbreviation].source)
         if c.ratio-coins[abbreviation].fee > bestprof and c.willingToMine:
             bestcoin = abbreviation
             bestprof=c.ratio-coins[abbreviation].fee
-    print "-"*27
+    print "-"*36
     print "=> Best: %d, mining %s" % (bestprof, coins[bestcoin].name)
     coins[bestcoin].median = ((coins[bestcoin].median * coins[bestcoin].cnt) + coins[bestcoin].ratio-coins[bestcoin].fee) / (coins[bestcoin].cnt+1)
     coins[bestcoin].cnt = coins[bestcoin].cnt+1
@@ -325,7 +326,7 @@ while True:
 
     if coins[bestcoin].miningNow == False:
         #i.e. if we're not already mining the best coin
-        print '=> Switching to',coins[bestcoin].name
+        print '=> Switching to %s (running %s)' % (coins[bestcoin].name, coins[bestcoin].command)
         for abbreviation, c in coins.items():
             c.miningNow = False
         coins[bestcoin].miningNow = True
@@ -349,6 +350,7 @@ while True:
         handler.save(key_file)
 
     #create status output strings
+    sname = "#         "
     smedian = "# Median: "
     stime = "# Time:   "
     median_all = 0
@@ -356,22 +358,23 @@ while True:
     for abbreviation, c in coins.items():
         if c.willingToMine:
             coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*idletime, 60)
-            smedian += abbreviation.upper()
-            smedian += " = %5d |  " % (coins[abbreviation].median)
-            stime += abbreviation.upper()
-            stime += " = %2d:%02d |  " % (coins[abbreviation].h, coins[abbreviation].m)
+            sname += "%5s    " % (abbreviation.upper())
+            smedian += "%5d |  " % (coins[abbreviation].median)
+            stime += "%2d:%02d |  " % (coins[abbreviation].h, coins[abbreviation].m)
             if coins[abbreviation].cnt > 0:
                 median_all = ((median_all * cnt_all) + (coins[abbreviation].median*coins[abbreviation].cnt)) / (cnt_all+coins[abbreviation].cnt)
                 cnt_all += coins[abbreviation].cnt
 
     #remove last chars
+    sname = sname[:-4]
     smedian = smedian[:-4]
     stime = stime[:-4]
 
-    smedian_all = '# Median (all): %5d' % (median_all)
-    stime_all = '# Time (all): %4d:%02d' % (divmod(cnt_all*idletime, 60))
+    smedian_all = '# Total Median:%5d' % (median_all)
+    stime_all = '# Total Time:%4d:%02d' % (divmod(cnt_all*idletime, 60))
 
     #fill strings to screen width and add "#" to the end
+    sname = "%s%s%s" % (sname, " "*(78-len(sname)), "#")
     smedian = "%s%s%s" % (smedian, " "*(78-len(smedian)), "#")
     stime = "%s%s%s" % (stime, " "*(78-len(stime)), "#")
     smedian_all = "%s%s%s" % (smedian_all, " "*(78-len(smedian_all)), "#")
@@ -379,6 +382,7 @@ while True:
 
     #output status strings
     print "\n", "#"*79
+    print sname
     print smedian
     print stime
     print smedian_all
@@ -386,5 +390,10 @@ while True:
     print "#"*79
 
     #sleep
-    print '\nSleeping for %d Minutes...' % (idletime)
-    time.sleep(idletime*60)
+    print '\nGoing to sleep...'
+    i=0
+    while i<idletime*60:
+        print "Seconds remaining:", (idletime*60-i),
+        time.sleep(1)
+        print '\r',
+        i+=1
