@@ -52,6 +52,7 @@ coins['sc'] =  Coin('SolidCoin')
 coins['trc'] =  Coin('TerraCoin')
 coins['ftc'] =  Coin('FeatherCoin')
 coins['mnc'] =  Coin('Mincoin')
+coins['cnc'] =  Coin('CHNCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -70,6 +71,7 @@ coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
 coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
 coins['ftc'].willingToMine = Config.getboolean('MineCoins','mineftc')
 coins['mnc'].willingToMine = Config.getboolean('MineCoins','minemnc')
+coins['cnc'].willingToMine = Config.getboolean('MineCoins','minecnc')
 
 #Mine vanity addresses
 coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
@@ -99,6 +101,7 @@ coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
 coins['ftc'].command=Config.get('Scripts','ftcscript')
 coins['mnc'].command=Config.get('Scripts','mncscript')
+coins['cnc'].command=Config.get('Scripts','cncscript')
 
 #read source list
 source = [x.strip() for x in Config.get('Misc','source').split(',')]
@@ -117,6 +120,7 @@ coins['bte'].fee = float(Config.get('Fees','feebte'))
 coins['frc'].fee = float(Config.get('Fees','feefrc'))
 coins['ftc'].fee = float(Config.get('Fees','feeftc'))
 coins['mnc'].fee = float(Config.get('Fees','feemnc'))
+coins['cnc'].fee = float(Config.get('Fees','feecnc'))
 
 
 #And now some information to calculate Vanity Address mining profitability
@@ -133,12 +137,12 @@ vircurexUsername = Config.get('Sell','vircurexUsername')
 #And flag which coins you want to sell as they come in. These coins will only
 #sell for BTC, not for USD or any other cryptocoin.
 coins['ltc'].willingToSell = Config.getboolean('Sell','sellLTC')
-coins['nmc'].willingToSell= Config.getboolean('Sell','sellNMC')
-coins['trc'].willingToSell= Config.getboolean('Sell','sellTRC')
-coins['ppc'].willingToSell= Config.getboolean('Sell','sellPPC')
-coins['nvc'].willingToSell= Config.getboolean('Sell','sellNVC')
-coins['dvc'].willingToSell= Config.getboolean('Sell','sellDVC')
-coins['ixc'].willingToSell= Config.getboolean('Sell','sellIXC')
+coins['nmc'].willingToSell = Config.getboolean('Sell','sellNMC')
+coins['trc'].willingToSell = Config.getboolean('Sell','sellTRC')
+coins['ppc'].willingToSell = Config.getboolean('Sell','sellPPC')
+coins['nvc'].willingToSell = Config.getboolean('Sell','sellNVC')
+coins['dvc'].willingToSell = Config.getboolean('Sell','sellDVC')
+coins['ixc'].willingToSell = Config.getboolean('Sell','sellIXC')
 
 
 def sellCoinBTCE(coin, tradeapi):

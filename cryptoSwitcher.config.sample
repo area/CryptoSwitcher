@@ -13,17 +13,18 @@ minenvc = False
 minetrc = False
 minebte = False
 minesc = False
-minefrc=False
-mineftc=False
-minemnc=False
+minefrc = False
+mineftc = False
+minemnc = False
+minecnc = False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
 #If you're merged mining some altcoins when you're bitcoin mining, set
 #the relevant coins below to 'True'
-mmNMC=True
-mmDVC=True
-mmIXC=True
+mmNMC = True
+mmDVC = True
+mmIXC = True
 
 #You should have scripts that stop all other forms of mining, set
 #your clocks and environment variables appropriately, and start
@@ -44,6 +45,7 @@ frcscript =
 btescript =
 ftcscript = 
 mncscript = 
+cncscript =
 
 #Set specific fee for every coin (in percent). The fee simply adds to the
 #profitability before calculating the most profitable coin. Negative values are
@@ -60,6 +62,7 @@ feesc = 0
 feefrc = 0
 feeftc = 4
 feemnc = 0
+feecnc = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
