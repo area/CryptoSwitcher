@@ -62,28 +62,11 @@ Config = ConfigParser.ConfigParser()
 Config.read('./cryptoSwitcher.config')
 
 #Enable the coins you want to mine here.
-coins['btc'].willingToMine = Config.getboolean('MineCoins','minebtc')
-coins['ltc'].willingToMine = Config.getboolean('MineCoins','mineltc')
-coins['ppc'].willingToMine = Config.getboolean('MineCoins','mineppc')
-coins['nvc'].willingToMine = Config.getboolean('MineCoins','minenvc')
-coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
-coins['bqc'].willingToMine = Config.getboolean('MineCoins','minebqc')
-coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
-coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
-coins['ftc'].willingToMine = Config.getboolean('MineCoins','mineftc')
-coins['mnc'].willingToMine = Config.getboolean('MineCoins','minemnc')
-coins['cnc'].willingToMine = Config.getboolean('MineCoins','minecnc')
-coins['btb'].willingToMine = Config.getboolean('MineCoins','minebtb')
-
-#Mine vanity addresses
-coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
-
-#If you're merged mining some altcoins when you're bitcoin mining, set
-#the relevant coins below to 'True'
-
-coins['nmc'].willingToMine=Config.getboolean('MineCoins','mmNMC')
-coins['dvc'].willingToMine=Config.getboolean('MineCoins','mmDVC')
-coins['ixc'].willingToMine=Config.getboolean('MineCoins','mmIXC')
+for key in coins:
+    try:
+        coins[key].willingToMine = Config.getboolean('MineCoins','mine'+key)
+    except:
+        continue
 
 #You should have scripts that stop all other forms of mining, set
 #your clocks and environment variables appropriately, and start
@@ -91,20 +74,11 @@ coins['ixc'].willingToMine=Config.getboolean('MineCoins','mmIXC')
 # 'bitcoin.sh' etc., but edit and/or replace these as you see fit.
 
 #Any coins you aren't mining you can just leave blank.
-
-coins['btc'].command=Config.get('Scripts','btcscript')
-coins['ltc'].command=Config.get('Scripts','ltcscript')
-coins['vanity'].command=Config.get('Scripts','vanityscript')
-coins['ppc'].command=Config.get('Scripts','ppcscript')
-coins['nvc'].command=Config.get('Scripts','nvcscript')
-coins['trc'].command=Config.get('Scripts','trcscript')
-coins['bqc'].command=Config.get('Scripts','bqcscript')
-coins['bte'].command=Config.get('Scripts','btescript')
-coins['frc'].command=Config.get('Scripts','frcscript')
-coins['ftc'].command=Config.get('Scripts','ftcscript')
-coins['mnc'].command=Config.get('Scripts','mncscript')
-coins['cnc'].command=Config.get('Scripts','cncscript')
-coins['btb'].command=Config.get('Scripts','btbscript')
+for key in coins:
+    try:
+        coins[key].command = Config.get('Scripts',key+'script')
+    except:
+        continue
 
 #read source list
 source = [x.strip() for x in Config.get('Misc','source').split(',')]
@@ -113,18 +87,11 @@ source = [x.strip() for x in Config.get('Misc','source').split(',')]
 idletime = int(Config.get('Misc','idletime'))
 
 #get the coinfees
-coins['btc'].fee = float(Config.get('Fees','feebtc'))
-coins['ltc'].fee = float(Config.get('Fees','feeltc'))
-coins['ppc'].fee = float(Config.get('Fees','feeppc'))
-coins['nvc'].fee = float(Config.get('Fees','feenvc'))
-coins['trc'].fee = float(Config.get('Fees','feetrc'))
-coins['bqc'].fee = float(Config.get('Fees','feebqc'))
-coins['bte'].fee = float(Config.get('Fees','feebte'))
-coins['frc'].fee = float(Config.get('Fees','feefrc'))
-coins['ftc'].fee = float(Config.get('Fees','feeftc'))
-coins['mnc'].fee = float(Config.get('Fees','feemnc'))
-coins['cnc'].fee = float(Config.get('Fees','feecnc'))
-coins['btb'].fee = float(Config.get('Fees','feebtb'))
+for key in coins:
+    try:
+        coins[key].fee = float(Config.get('Fees','fee'+key))
+    except:
+        continue
 
 
 #And now some information to calculate Vanity Address mining profitability
@@ -140,16 +107,11 @@ vircurexUsername = Config.get('Sell','vircurexUsername')
 
 #And flag which coins you want to sell as they come in. These coins will only
 #sell for BTC, not for USD or any other cryptocoin.
-coins['ltc'].willingToSell = Config.getboolean('Sell','sellLTC')
-coins['nmc'].willingToSell = Config.getboolean('Sell','sellNMC')
-coins['trc'].willingToSell = Config.getboolean('Sell','sellTRC')
-coins['ppc'].willingToSell = Config.getboolean('Sell','sellPPC')
-coins['nvc'].willingToSell = Config.getboolean('Sell','sellNVC')
-coins['dvc'].willingToSell = Config.getboolean('Sell','sellDVC')
-coins['ixc'].willingToSell = Config.getboolean('Sell','sellIXC')
-coins['frc'].willingToSell = Config.getboolean('Sell','sellFRC')
-coins['ftc'].willingToSell = Config.getboolean('Sell','sellFTC')
-coins['cnc'].willingToSell = Config.getboolean('Sell','sellCNC')
+for key in coins:
+    try:
+        coins[key].willingToSell = Config.getboolean('Sell','sell'+key)
+    except:
+        continue
 
 
 def sellCoinBTCE(coin, tradeapi):
