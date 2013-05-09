@@ -48,11 +48,12 @@ coins['nmc'] =  Coin('NameCoin')
 coins['nmc'].merged = True
 coins['ppc'] =  Coin('PPCoin')
 coins['nvc'] =  Coin('NovaCoin')
-coins['sc'] =  Coin('SolidCoin')
+coins['bqc'] =  Coin('BBQCoin')
 coins['trc'] =  Coin('TerraCoin')
 coins['ftc'] =  Coin('FeatherCoin')
 coins['mnc'] =  Coin('Mincoin')
 coins['cnc'] =  Coin('CHNCoin')
+coins['btb'] =  Coin('Bitbar')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -66,12 +67,13 @@ coins['ltc'].willingToMine = Config.getboolean('MineCoins','mineltc')
 coins['ppc'].willingToMine = Config.getboolean('MineCoins','mineppc')
 coins['nvc'].willingToMine = Config.getboolean('MineCoins','minenvc')
 coins['trc'].willingToMine = Config.getboolean('MineCoins','minetrc')
-coins['sc'].willingToMine = Config.getboolean('MineCoins','minesc')
+coins['bqc'].willingToMine = Config.getboolean('MineCoins','minebqc')
 coins['bte'].willingToMine = Config.getboolean('MineCoins','minebte')
 coins['frc'].willingToMine = Config.getboolean('MineCoins','minefrc')
 coins['ftc'].willingToMine = Config.getboolean('MineCoins','mineftc')
 coins['mnc'].willingToMine = Config.getboolean('MineCoins','minemnc')
 coins['cnc'].willingToMine = Config.getboolean('MineCoins','minecnc')
+coins['btb'].willingToMine = Config.getboolean('MineCoins','minebtb')
 
 #Mine vanity addresses
 coins['vanity'].willingToMine = Config.getboolean('MineCoins','minevanity')
@@ -96,12 +98,13 @@ coins['vanity'].command=Config.get('Scripts','vanityscript')
 coins['ppc'].command=Config.get('Scripts','ppcscript')
 coins['nvc'].command=Config.get('Scripts','nvcscript')
 coins['trc'].command=Config.get('Scripts','trcscript')
-coins['sc'].command=Config.get('Scripts','scscript')
+coins['bqc'].command=Config.get('Scripts','bqcscript')
 coins['bte'].command=Config.get('Scripts','btescript')
 coins['frc'].command=Config.get('Scripts','frcscript')
 coins['ftc'].command=Config.get('Scripts','ftcscript')
 coins['mnc'].command=Config.get('Scripts','mncscript')
 coins['cnc'].command=Config.get('Scripts','cncscript')
+coins['btb'].command=Config.get('Scripts','btbscript')
 
 #read source list
 source = [x.strip() for x in Config.get('Misc','source').split(',')]
@@ -115,12 +118,13 @@ coins['ltc'].fee = float(Config.get('Fees','feeltc'))
 coins['ppc'].fee = float(Config.get('Fees','feeppc'))
 coins['nvc'].fee = float(Config.get('Fees','feenvc'))
 coins['trc'].fee = float(Config.get('Fees','feetrc'))
-coins['sc'].fee = float(Config.get('Fees','feesc'))
+coins['bqc'].fee = float(Config.get('Fees','feebqc'))
 coins['bte'].fee = float(Config.get('Fees','feebte'))
 coins['frc'].fee = float(Config.get('Fees','feefrc'))
 coins['ftc'].fee = float(Config.get('Fees','feeftc'))
 coins['mnc'].fee = float(Config.get('Fees','feemnc'))
 coins['cnc'].fee = float(Config.get('Fees','feecnc'))
+coins['btb'].fee = float(Config.get('Fees','feebtb'))
 
 
 #And now some information to calculate Vanity Address mining profitability
@@ -309,7 +313,7 @@ while True:
             miningbtcsec = ghashpersec * btcperghash
             vanityprof = vanitybtcsec / miningbtcsec * 100
             coins['vanity'].ratio = vanityprof
-            print 'Vanity Mining', vanityprof
+            #print 'Vanity Mining', vanityprof
 
     #Now find the best profit coin
     bestcoin = 'btc'
