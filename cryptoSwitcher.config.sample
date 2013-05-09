@@ -102,7 +102,9 @@ sellPPC = False
 sellNVC = False
 sellIXC = True
 sellDVC = True
-
+sellFRC = True
+sellFTC = True
+sellCNC = True
 #Now edit the file called 'key.sample' to contain your api key, your secret,
 #and a nonce on three separate lines if you're using BTCE. If you haven't used
 #the key before, a nonce of '100' should be fine. Rename 'key.sample' to 'key'.

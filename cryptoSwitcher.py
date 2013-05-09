@@ -147,6 +147,9 @@ coins['ppc'].willingToSell = Config.getboolean('Sell','sellPPC')
 coins['nvc'].willingToSell = Config.getboolean('Sell','sellNVC')
 coins['dvc'].willingToSell = Config.getboolean('Sell','sellDVC')
 coins['ixc'].willingToSell = Config.getboolean('Sell','sellIXC')
+coins['frc'].willingToSell = Config.getboolean('Sell','sellFRC')
+coins['ftc'].willingToSell = Config.getboolean('Sell','sellFTC')
+coins['cnc'].willingToSell = Config.getboolean('Sell','sellCNC')
 
 
 def sellCoinBTCE(coin, tradeapi):
