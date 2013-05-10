@@ -156,23 +156,32 @@ while True:
     print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     print "getting data...",
     #coinchoose
-    req = urllib2.Request("http://www.coinchoose.com/api.php")
-    opener = urllib2.build_opener()
-    opener.addheaders = [('User-agent', 'CryptoSwitcher')]
+    try:
+        req = urllib2.Request("http://www.coinchoose.com/api.php")
+        opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', 'CryptoSwitcher')]
+    except:
+        print "\nnotice: something wrong with coinchoose\n"
 
     #dustcoin
-    usock = urllib2.urlopen('http://dustcoin.com/mining')
-    data = usock.read()
-    usock.close()
-    soup = BeautifulSoup(data)
-    table_dustcoin = soup.findAll('tr',{ "class":"coin" })
+    try:
+        usock = urllib2.urlopen('http://dustcoin.com/mining')
+        data = usock.read()
+        usock.close()
+        soup = BeautifulSoup(data)
+        table_dustcoin = soup.findAll('tr',{ "class":"coin" })
+    except:
+        print "\nnotice: something wrong with dustcoin\n"
 
     #coinotron
-    usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
-    data = usock.read()
-    usock.close()
-    soup = BeautifulSoup(data)
-    table_coinotron = soup.findAll('tr')
+    try:
+        usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
+        data = usock.read()
+        usock.close()
+        soup = BeautifulSoup(data)
+        table_coinotron = soup.findAll('tr')
+    except:
+        print "\nnotice: something wrong with coinotron"
     print "done"
 
     print "decoding data...",
