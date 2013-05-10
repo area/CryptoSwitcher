@@ -2,7 +2,7 @@ CryptoSwitcher
 ==============
 
 A script to switch between mining BTC and altcoins as profitability dictates,
-using the powers of www.dustcoin.com.
+using the powers of http://dustcoin.com.
 
 Dependencies
 ---
