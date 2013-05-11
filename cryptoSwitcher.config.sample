@@ -23,9 +23,9 @@ minevanity = False
 
 #If you're merged mining some altcoins when you're bitcoin mining, set
 #the relevant coins below to 'True'
-mmNMC = True
-mmDVC = True
-mmIXC = True
+minenmc = True
+minedvc = True
+mineixc = True
 
 #You should have scripts that stop all other forms of mining, set
 #your clocks and environment variables appropriately, and start
