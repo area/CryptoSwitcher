@@ -18,6 +18,7 @@ mineftc = False
 minemnc = False
 minecnc = False
 minebtb = False
+minewdc = False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
@@ -48,24 +49,26 @@ ftcscript =
 mncscript = 
 cncscript =
 btbscript = 
+wdcscript = 
 
 #Set specific fee for every coin (in percent). The fee simply adds to the
 #profitability before calculating the most profitable coin. Negative values are
 #also allowed, they increase the profitability.
 
 [Fees]
-feebtc = -1
-feeltc = 4
-feeppc = 7
+feebtc = -5
+feeltc = 0
+feeppc = 0
 feenvc = 0
-feetrc = 12
+feetrc = 0
 feebte = 0
 feebqc = 0
 feefrc = 0
-feeftc = 4
+feeftc = 0
 feemnc = 0
 feecnc = 0
 feebtb = 0
+feewdc = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,

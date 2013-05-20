@@ -54,6 +54,7 @@ coins['ftc'] =  Coin('FeatherCoin')
 coins['mnc'] =  Coin('Mincoin')
 coins['cnc'] =  Coin('CHNCoin')
 coins['btb'] =  Coin('Bitbar')
+coins['wdc'] =  Coin('Worldcoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
