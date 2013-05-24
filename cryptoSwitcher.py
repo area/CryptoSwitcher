@@ -342,7 +342,6 @@ while True:
     for abbreviation, c in coins.items():
         if c.willingToMine:
             coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*idletime, 60)
-            coins['dgc'].h = 10
             if coins[abbreviation].h < 10:
                 sname += "%5s  " % (abbreviation.upper())
                 smedian += "%5d |" % (coins[abbreviation].median)
