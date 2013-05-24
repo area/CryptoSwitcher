@@ -334,9 +334,9 @@ while True:
         handler.save(key_file)
 
     #create status output strings
-    sname = "#         "
-    smedian = "# Median: "
-    stime = "# Time:   "
+    sname = "#        "
+    smedian = "# Median:"
+    stime = "# Time:  "
     median_all = 0
     cnt_all = 0
     for abbreviation, c in coins.items():
@@ -368,23 +368,17 @@ while True:
     stime_all = '# Total Time:%4d:%02d' % (divmod(cnt_all*idletime, 60))
 
     #fill strings to screen width and add "#" to the end
-    sname = "%s%s%s" % (sname, " "*(78-len(sname)), "#")
-    smedian = "%s%s%s" % (smedian, " "*(78-len(smedian)), "#")
-    stime = "%s%s%s" % (stime, " "*(78-len(stime)), "#")
-    smedian_all = "%s%s%s" % (smedian_all, " "*(78-len(smedian_all)), "#")
-    stime_all = "%s%s%s" % (stime_all, " "*(78-len(stime_all)), "#")
+    sname = "%s%s%s" % (sname, " "*(79-len(sname)), "#")
+    smedian = "%s%s%s" % (smedian, " "*(79-len(smedian)), "#")
+    stime = "%s%s%s" % (stime, " "*(79-len(stime)), "#")
+    smedian_all = "%s%s%s" % (smedian_all, " "*(79-len(smedian_all)), "#")
+    stime_all = "%s%s%s" % (stime_all, " "*(79-len(stime_all)), "#")
 
     #output status strings
-    print "\n", "#"*79
-    print sname
-    print smedian
-    print stime
-    print smedian_all
-    print stime_all
-    print "#"*79
+    print "\n", "#"*80+sname+smedian+stime+smedian_all+stime_all+"#"*80
 
     #sleep
-    print '\nGoing to sleep...'
+    print 'Going to sleep...'
     i=0
     while i<idletime*60:
         print "Seconds remaining:", (idletime*60-i),
