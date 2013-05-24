@@ -55,6 +55,7 @@ coins['mnc'] =  Coin('Mincoin')
 coins['cnc'] =  Coin('CHNCoin')
 coins['btb'] =  Coin('Bitbar')
 coins['wdc'] =  Coin('Worldcoin')
+coins['dgc'] =  Coin('DigitalCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
@@ -341,17 +342,27 @@ while True:
     for abbreviation, c in coins.items():
         if c.willingToMine:
             coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*idletime, 60)
-            sname += "%5s    " % (abbreviation.upper())
-            smedian += "%5d |  " % (coins[abbreviation].median)
-            stime += "%2d:%02d |  " % (coins[abbreviation].h, coins[abbreviation].m)
+            coins['dgc'].h = 10
+            if coins[abbreviation].h < 10:
+                sname += "%5s  " % (abbreviation.upper())
+                smedian += "%5d |" % (coins[abbreviation].median)
+                stime += "%2d:%02d |" % (coins[abbreviation].h, coins[abbreviation].m)
+            elif coins[abbreviation].h < 100:
+                sname += "%6s  " % (abbreviation.upper())
+                smedian += "%6d |" % (coins[abbreviation].median)
+                stime += "%3d:%02d |" % (coins[abbreviation].h, coins[abbreviation].m)
+            else:
+                sname += "%7s  " % (abbreviation.upper())
+                smedian += "%7d |" % (coins[abbreviation].median)
+                stime += "%4d:%02d |" % (coins[abbreviation].h, coins[abbreviation].m)
             if coins[abbreviation].cnt > 0:
                 median_all = ((median_all * cnt_all) + (coins[abbreviation].median*coins[abbreviation].cnt)) / (cnt_all+coins[abbreviation].cnt)
                 cnt_all += coins[abbreviation].cnt
 
     #remove last chars
-    sname = sname[:-4]
-    smedian = smedian[:-4]
-    stime = stime[:-4]
+    sname = sname[:-2]
+    smedian = smedian[:-2]
+    stime = stime[:-2]
 
     smedian_all = '# Total Median:%5d' % (median_all)
     stime_all = '# Total Time:%4d:%02d' % (divmod(cnt_all*idletime, 60))

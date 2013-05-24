@@ -19,6 +19,7 @@ minemnc = False
 minecnc = False
 minebtb = False
 minewdc = False
+minedgc = False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
@@ -38,18 +39,19 @@ mineixc = True
 [Scripts]
 ltcscript = ./litecoin.sh
 btcscript = ./bitcoin.sh
-vanityscript = 
-ppcscript = 
-nvcscript = 
-trcscript = 
-bqcscript = 
-frcscript = 
+vanityscript =
+ppcscript =
+nvcscript =
+trcscript =
+bqcscript =
+frcscript =
 btescript =
-ftcscript = 
-mncscript = 
+ftcscript =
+mncscript =
 cncscript =
-btbscript = 
-wdcscript = 
+btbscript =
+wdcscript =
+dgcscript =
 
 #Set specific fee for every coin (in percent). The fee simply adds to the
 #profitability before calculating the most profitable coin. Negative values are
@@ -69,6 +71,7 @@ feemnc = 0
 feecnc = 0
 feebtb = 0
 feewdc = 0
+feedgc = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
