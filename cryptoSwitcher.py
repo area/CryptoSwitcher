@@ -56,6 +56,7 @@ coins['cnc'] =  Coin('CHNCoin')
 coins['btb'] =  Coin('Bitbar')
 coins['wdc'] =  Coin('Worldcoin')
 coins['dgc'] =  Coin('DigitalCoin')
+coins['gld'] =  Coin('GLDCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 

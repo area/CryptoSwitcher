@@ -20,6 +20,7 @@ minecnc = False
 minebtb = False
 minewdc = False
 minedgc = False
+minegld = False
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
@@ -52,6 +53,7 @@ cncscript =
 btbscript =
 wdcscript =
 dgcscript =
+gldscript = 
 
 #Set specific fee for every coin (in percent). The fee simply adds to the
 #profitability before calculating the most profitable coin. Negative values are
@@ -72,6 +74,7 @@ feecnc = 0
 feebtb = 0
 feewdc = 0
 feedgc = 0
+feegld = 0
 
 [Misc]
 #What source for our data should we use? ChooseCoin is probably better,
@@ -106,11 +109,11 @@ sellNMC = False
 sellTRC = False
 sellPPC = False
 sellNVC = False
-sellIXC = True
-sellDVC = True
-sellFRC = True
-sellFTC = True
-sellCNC = True
+sellIXC = False
+sellDVC = False
+sellFRC = False
+sellFTC = False
+sellCNC = False
 #Now edit the file called 'key.sample' to contain your api key, your secret,
 #and a nonce on three separate lines if you're using BTCE. If you haven't used
 #the key before, a nonce of '100' should be fine. Rename 'key.sample' to 'key'.
