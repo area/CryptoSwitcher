@@ -1,123 +1,139 @@
 #---------------------------------------
-# Cryptocurrency mining switcher config file
-# TipJar (BTC): 1NhathL6LpcgofDnHELSS6Hej6kU9xrVgp
-# Author: area
+#Cryptocurrency mining switcher config file
+#TipJar (BTC): 1NhathL6LpcgofDnHELSS6Hej6kU9xrVgp
+#Author: area
 #---------------------------------------
 
-#Enable the coins you want to mine here.
 [MineCoins]
-minebtc = True
-mineltc = True
-mineppc = False
-minenvc = False
-minetrc = False
-minebte = False
+
+#Enable the coins you want to mine here.
 minebqc = False
+minebtb = False
+minebtc = True
+minebte = False
+minecnc = False
+minedgc = False
+mineelc = False
 minefrc = False
 mineftc = False
-minemnc = False
-minecnc = False
-minebtb = False
-minewdc = False
-minedgc = False
 minegld = False
+minejkc = False
+mineltc = True
+minemnc = False
+minenvc = False
+mineppc = False
+minepwc = False
+mineryc = False
+minetrc = False
+minewdc = False
+
+#BTC Merged mining coins. 
+#Will be added to Bitcoin profitibilty when True.
+minedvc = True
+mineixc = True
+minenmc = True
+
 #If you want to mine vanity addresses, then set this to True
 minevanity = False
 
-#If you're merged mining some altcoins when you're bitcoin mining, set
-#the relevant coins below to 'True'
-minenmc = True
-minedvc = True
-mineixc = True
+[Scripts]
+#You should have scripts that stop all other forms of mining,
+# set all necesary environment variables,
+# and start mining the appropriate coin. 
 
-#You should have scripts that stop all other forms of mining, set
-#your clocks and environment variables appropriately, and start
-# mining the appropriate coin. I have these called 'litecoin.sh',
-# 'bitcoin.sh' etc., but edit and/or replace these as you see fit.
+#Examples included are 'litecoin.sh' and 'bitcoin.sh'.
 #Any coins you aren't mining you can just leave blank.
 #For Windows you can use bat-files, eg "btcscript = bitcoin.bat".
 
-[Scripts]
-ltcscript = ./litecoin.sh
-btcscript = ./bitcoin.sh
-vanityscript =
-ppcscript =
-nvcscript =
-trcscript =
-bqcscript =
-frcscript =
-btescript =
-ftcscript =
-mncscript =
-cncscript =
-btbscript =
-wdcscript =
-dgcscript =
+bqcscript = 
+btbscript = 
+btcscript = bitcoin.bat
+btescript = 
+cncscript = 
+dgcscript = 
+elcscript = 
+frcscript = 
+ftcscript = 
 gldscript = 
+jkcscript = 
+ltcscript = ./litecoin.sh
+mncscript = 
+nvcscript = 
+ppcscript = 
+pwcscript = 
+rycscript = 
+trcscript = 
+wdcscript = 
 
-#Set specific fee for every coin (in percent). The fee simply adds to the
-#profitability before calculating the most profitable coin. Negative values are
-#also allowed, they increase the profitability.
+vanityscript = 
 
 [Fees]
-feebtc = -5
-feeltc = 0
-feeppc = 0
-feenvc = 0
-feetrc = 0
-feebte = 0
-feebqc = 0
-feefrc = 0
-feeftc = 0
-feemnc = 0
-feecnc = 0
+#Set specific fees for every coin (in percent). 
+#The fee simply adds to the profitability before calculating the most profitable coin.
+#Negative values are also allowed, they increase the profitability.
+feebqc = 2
 feebtb = 0
+feebtc = 1.5
+feebte = 0
+feecnc = 2
+feedgc = 2
+feeelc = 0
+feefrc = 2
+feeftc = 2
+feegld = 2
+feejkc = 0
+feeltc = 2
+feemnc = 0
+feenvc = 0
+feeppc = 2
+feepwc = 0
+feeryc = 0
+feetrc = 2
 feewdc = 0
-feedgc = 0
-feegld = 0
 
 [Misc]
+
 #What source for our data should we use? ChooseCoin is probably better,
 #in that it lists more coins. Coinotron seems to be updated most frequently.
 #The first entry in the list has the highest priority and is used first. If the
 #site is down, the second source is used.
-source=coinchoose, dustcoin, coinotron
+source=coinotron, coinchoose, dustcoin
 
 #Idle Time (in minutes) between two checks of coin profitability.
 idletime = 5
 
 #And now some information to calculate Vanity Address mining profitability.
-#The figures that go in here depend on your hardware. If you're not doing
-#vanity mining, you can leave these blank.
+#The figures that go in here depend on your hardware. 
+#If you're not doing vanity mining, you can leave these blank.
 #Gigakeys per second you can test
 gkeypersec = 0.05
 #Gigahash per second you can output doing normal BTC mining.
 ghashpersec = 0.7
 
 [Sell]
-#If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
-enableBTCE = False
-#or sell on VirCurEx
-enableVircurex = False
-vircurexSecret =
-vircurexUsername =
+#If you want to sell your coins ASAP after mining, enable an exchange here.
+#This will automatically sell flagged coins for BTC ONLY.
 
-#And flag which coins you want to sell as they come in. These coins will only
-#sell for BTC, not for USD or any other cryptocoin.
-sellLTC = False
-sellNMC = False
-sellTRC = False
-sellPPC = False
-sellNVC = False
-sellIXC = False
+#BTC-e
+enableBTCE = False
+#You'll need to configure your API key, secret, and a nonce in "key.sample".
+#Rename this file to "key". 
+
+#VirCurEx
+enableVircurex = False
+vircurexUsername = VCEUSERNAME
+vircurexSecret = APISECRET
+
+#Enable the coins you want to sell here.
+sellBQC = False
+sellCNC = False
 sellDVC = False
 sellFRC = False
 sellFTC = False
-sellCNC = False
-#Now edit the file called 'key.sample' to contain your api key, your secret,
-#and a nonce on three separate lines if you're using BTCE. If you haven't used
-#the key before, a nonce of '100' should be fine. Rename 'key.sample' to 'key'.
-
-#if you're using VirCurEx, then put your secret word here. Currently, this is the
-#for every API function.
-vircurexWord = secretWord
+sellIXC = False
+sellLTC = False
+sellNMC = False
+sellNVC = False
+sellPPC = False
+sellTRC = False
+#sellYAC = False <- Not minable through cryptoswitcher.

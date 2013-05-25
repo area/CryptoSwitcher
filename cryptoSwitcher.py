@@ -36,27 +36,32 @@ class Coin:
         self.source = ''
 
 coins = {}
+coins['bqc'] =  Coin('BBQCoin')
+coins['btb'] =  Coin('Bitbar')
 coins['btc'] =  Coin('Bitcoin')
 coins['bte'] =  Coin('Bytecoin')
+coins['cnc'] =  Coin('CHNCoin')
+coins['dgc'] =  Coin('DigitalCoin')
+coins['elc'] =  Coin('Elacoin')
+coins['frc'] =  Coin('Freicoin')
+coins['ftc'] =  Coin('FeatherCoin')
+coins['gld'] =  Coin('GLDCoin')
+coins['jkc'] =  Coin('Junkcoin')
+coins['ltc'] =  Coin('Litecoin')
+coins['mnc'] =  Coin('Mincoin')
+coins['nvc'] =  Coin('NovaCoin')
+coins['ppc'] =  Coin('PPCoin')
+coins['pwc'] =  Coin('Powercoin')
+coins['ryc'] =  Coin('RoyalCoin')
+coins['trc'] =  Coin('TerraCoin')
+coins['wdc'] =  Coin('Worldcoin')
+#Merged
 coins['dvc'] =  Coin('Devcoin')
 coins['dvc'].merged = True
-coins['frc'] =  Coin('Freicoin')
 coins['ixc'] =  Coin('IXCoin')
 coins['ixc'].merged = True
-coins['ltc'] =  Coin('Litecoin')
 coins['nmc'] =  Coin('NameCoin')
 coins['nmc'].merged = True
-coins['ppc'] =  Coin('PPCoin')
-coins['nvc'] =  Coin('NovaCoin')
-coins['bqc'] =  Coin('BBQCoin')
-coins['trc'] =  Coin('TerraCoin')
-coins['ftc'] =  Coin('FeatherCoin')
-coins['mnc'] =  Coin('Mincoin')
-coins['cnc'] =  Coin('CHNCoin')
-coins['btb'] =  Coin('Bitbar')
-coins['wdc'] =  Coin('Worldcoin')
-coins['dgc'] =  Coin('DigitalCoin')
-coins['gld'] =  Coin('GLDCoin')
 #Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
 
