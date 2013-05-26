@@ -34,6 +34,10 @@ class Coin:
         self.h = 0
         self.fee = 0
         self.source = ''
+        self.price = 0.0
+        self.diff = 1000000000.0
+        self.reward = 0
+        self.algo = ""
 
 coins = {}
 coins['bqc'] =  Coin('BBQCoin')
@@ -89,7 +93,18 @@ for key in coins:
         continue
 
 #read source list
-source = [x.strip() for x in Config.get('Misc','source').split(',')]
+source = [x.strip() for x in Config.get('Data-Source','source').split(',')]
+extout = False
+for x in source:
+    if x=="cryptoswitcher":
+        extout = True
+
+#read source list
+source_cryptoswitcher = [x.strip() for x in Config.get('Data-Source','source_cryptoswitcher').split(',')]
+
+#read hashrates
+hashrate_sha256 = int(Config.get('Data-Source','hashrate_sha256'))
+hashrate_scrypt = int(Config.get('Data-Source','hashrate_scrypt'))
 
 #get idle time between two profitability check cycles
 idletime = int(Config.get('Misc','idletime'))
@@ -157,54 +172,69 @@ if enableBTCE:
     secret, nonce =  handler.keys[handler.keys.keys()[0]]
     authedAPI = btceapi.TradeAPI(key, secret, nonce)
 
+
+#create http handler
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'CryptoSwitcher')]
+
+
+# main loop
 cnt_all = 0
 while True:
     #get data from sources
     print "\n\n\n<<< Round %d >>>" % (cnt_all+1)
     print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    print "getting data...",
+    prestr = "\r" + 79*" " + "\r" + "getting data... "
+
     #coinchoose
     try:
+        print prestr + "coinchoose",
         req = urllib2.Request("http://www.coinchoose.com/api.php")
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', 'CryptoSwitcher')]
+        opener_cc = urllib2.build_opener()
+        opener_cc.addheaders = [('User-agent', 'CryptoSwitcher')]
+        f = opener_cc.open(req)
+        data_cc = simplejson.load(f)
     except:
-        print "\nnotice: something wrong with coinchoose\n"
+        null
 
     #dustcoin
     try:
+        print prestr + "dustcoin",
         usock = urllib2.urlopen('http://dustcoin.com/mining')
         data = usock.read()
         usock.close()
         soup = BeautifulSoup(data)
         table_dustcoin = soup.findAll('tr',{ "class":"coin" })
     except:
-        print "\nnotice: something wrong with dustcoin\n"
+        null
 
     #coinotron
     try:
+        print prestr + "coinotron",
         usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
         data = usock.read()
         usock.close()
         soup = BeautifulSoup(data)
         table_coinotron = soup.findAll('tr')
     except:
-        print "\nnotice: something wrong with coinotron"
-    print "done"
+        null
 
-    print "decoding data...",
+
     #assign data to coins
     #loop through coins
     for abbreviation, c in coins.items():
-        #current read marked as unsuccessful by default
+        #only get profitability for coins which we are interested in.
+        #this saves network traffic and running time
+        if c.willingToMine==False:
+            continue
+
         success = 0
         #loop trough source list. try first entry first.
         for x in source:
             if x=='coinchoose':
                 try:
-                    f = opener.open(req)
-                    output = simplejson.load(f)
-                    for item in output:
+                    print prestr + abbreviation + ": ",
+                    for item in data_cc:
                         if item['symbol'].lower()==abbreviation:
                             coins[item['symbol'].lower()].ratio = float(item['ratio'])
                             coins[item['symbol'].lower()].source = 'cc'
@@ -254,8 +284,116 @@ while True:
                 except:
                     continue
 
+            #lets calulate profitability ourself
+            elif x=='cryptoswitcher':
+                #get difficulty and block rewards
+                #source for difficulty data depends on coin
+                try:
+                    #if this is the first time we come here, update btc as well.
+                    #otherwise we are unable to calculate the profitabilty.
+                    print prestr + "difficulty of " + coins[abbreviation].name,
+                    if coins['btc'].reward == 0:
+                        for item in data_cc:
+                            if item['symbol'].lower()=='btc':
+                                coins['btc'].diff = float(item['difficulty'])
+                                coins['btc'].reward = float(item['reward'])
+                                break
+
+                    #get difficulty values from coinchoose by default
+                    for item in data_cc:
+                        if item['symbol'].lower()==abbreviation:
+                            coins[item['symbol'].lower()].diff = float(item['difficulty'])
+                            coins[item['symbol'].lower()].reward = float(item['reward'])
+                            coins[item['symbol'].lower()].algo = item['algo']
+                            break
+
+                    #if we dont have a difficulty source for our coin, continue loop and get profitabilty from
+                    #other sources
+                    if item['symbol'].lower()!=abbreviation:
+                        continue
+
+                    #for trc: use a different source for difficulty
+                    if abbreviation == 'trc':
+                        req = urllib2.Request("http://cryptocoinexplorer.com:3750/chain/Terracoin/q/getdifficulty")
+                        f = opener.open(req)
+                        coins['trc'].diff = simplejson.load(f)
+
+                    #for btc: we dont need to calculate
+                    if abbreviation=='btc':
+                        coins['btc'].ratio=100.0
+                        coins['btc'].source = '--'
+                        coins['btc'].algo = "SHA-256"
+                        coins['btc'].price = 1.0
+                        success = 1
+                        break
+
+                except:
+                    continue
+
+
+                #calculate highest buy value
+                #use only data sources defined in source_cryptoswitcher
+                coins[abbreviation].price = 0.0
+                for y in source_cryptoswitcher:
+
+                    #if coin profitability couldnt be processed manually in the
+                    #last round, then they are probably not traded on the chosen
+                    #markets. so the coin is removed from manual processing.
+                    if coins[abbreviation].source != '' and coins[abbreviation].source != 'cs':
+                        continue
+
+                    #btc-e
+                    if y=='btce':
+                        try:
+                            print prestr + "price of " + coins[abbreviation].name + " at BTC-E",
+                            req = urllib2.Request("https://btc-e.com/api/2/" + abbreviation + "_btc/ticker")
+                            f = opener.open(req)
+                            output = simplejson.load(f)
+                            if coins[abbreviation].price < float(output['ticker']['sell']):
+                                coins[abbreviation].price = float(output['ticker']['sell'])
+                        except:
+                            continue
+
+                    #bter
+                    elif y=='bter':
+                        try:
+                            print prestr + "price of " + coins[abbreviation].name + " at Bter",
+                            req = urllib2.Request("https://bter.com/api/1/ticker/" + abbreviation + "_btc")
+                            f = opener.open(req)
+                            output = simplejson.load(f)
+                            if coins[abbreviation].price < float(output['buy']):
+                                coins[abbreviation].price = float(output['buy'])
+                        except:
+                            continue
+
+                    #vircurex
+                    elif y=='vircurex':
+                        try:
+                            print prestr + "price of " + coins[abbreviation].name + " at Vircurex",
+                            req = urllib2.Request("https://vircurex.com/api/get_highest_bid.json?base=" + abbreviation + "&alt=btc")
+                            f = opener.open(req)
+                            output = simplejson.load(f)
+                            if coins[abbreviation].price < float(output['value']):
+                                coins[abbreviation].price = float(output['value'])
+                        except:
+                            continue
+
+                #calculate profitability
+                if coins[abbreviation].price!=0.0:
+                    try:
+                        if coins[abbreviation].algo == 'scrypt':
+                            coins[abbreviation].ratio = (coins[abbreviation].reward/coins[abbreviation].diff)/(coins['btc'].reward/coins['btc'].diff)*coins[abbreviation].price*100/(hashrate_sha256/hashrate_scrypt)
+                        else:
+                            coins[abbreviation].ratio = (coins[abbreviation].reward/coins[abbreviation].diff)/(coins['btc'].reward/coins['btc'].diff)*coins[abbreviation].price*100
+                        coins[abbreviation].source = 'cs'
+                        success = 1
+                        break
+                    except:
+                        continue
+
             if success==1:
                 break
+
 
     #Now work out how profitable btc mining really is, if we're doing any merged mining
     if coins['nmc'].willingToMine:
@@ -265,7 +403,7 @@ while True:
     if coins['ixc'].willingToMine:
         coins['btc'].ratio +=coins['ixc'].ratio
 
-    print "done"
+    print prestr + "done"
 
 
     #Now get data for vanity mining
@@ -304,7 +442,14 @@ while True:
     print "-"*36
     for abbreviation, c in coins.items():
         if c.willingToMine:
-            print "%11s: %3d  (fee: %2d, src: %s)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee, coins[abbreviation].source)
+            print "%11s: %3d  (fee: %2d, src: %s)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee, coins[abbreviation].source),
+            if extout == True:
+                if coins[abbreviation].source == "cs" or coins[abbreviation].source == "--":
+                    print "(pr: %.5f, di[%s]: %.2f)" % (coins[abbreviation].price, coins[abbreviation].algo, coins[abbreviation].diff),
+                else:
+                    print "(pr:  -NA-  , di[%s]: %.2f)" % (coins[abbreviation].algo, coins[abbreviation].diff),
+            print ""
+
         if c.ratio-coins[abbreviation].fee > bestprof and c.willingToMine:
             bestcoin = abbreviation
             bestprof=c.ratio-coins[abbreviation].fee
@@ -320,7 +465,7 @@ while True:
         for abbreviation, c in coins.items():
             c.miningNow = False
         coins[bestcoin].miningNow = True
-        subprocess.Popen(coins[bestcoin].command)
+        #subprocess.Popen(coins[bestcoin].command)
 
     #Sell some coins if that's what we're into
     for abbreviation, c in coins.items():
@@ -386,7 +531,6 @@ while True:
     print 'Going to sleep...'
     i=0
     while i<idletime*60:
-        print "Seconds remaining:", (idletime*60-i),
+        print "\r" + 79*" " + "\r" + "Seconds remaining:", (idletime*60-i),
         time.sleep(1)
-        print '\r',
         i+=1
