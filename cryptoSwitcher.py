@@ -180,46 +180,52 @@ extout = False
 # main loop
 cnt_all = 0
 while True:
-    # get data from sources
+    # print header
     print "\n\n\n<<< Round %d >>>" % (cnt_all+1)
     print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    # get data from sources
     prestr = "getting data... "
 
-    # coinchoose
-    try:
-        fullstr = prestr + "coinchoose"
-        print fullstr + (79-len(fullstr))*" " + "\r",
-        req = urllib2.Request("http://www.coinchoose.com/api.php")
-        opener_cc = urllib2.build_opener()
-        opener_cc.addheaders = [('User-agent', 'CryptoSwitcher')]
-        f = opener_cc.open(req)
-        data_cc = simplejson.load(f)
-    except:
-        pass
+    for x in source:
+        # coinchoose
+        if x=='coinchoose':
+            try:
+                fullstr = prestr + "coinchoose"
+                print fullstr + (79-len(fullstr))*" " + "\r",
+                req = urllib2.Request("http://www.coinchoose.com/api.php")
+                opener_cc = urllib2.build_opener()
+                opener_cc.addheaders = [('User-agent', 'CryptoSwitcher')]
+                f = opener_cc.open(req)
+                data_cc = simplejson.load(f)
+            except:
+                pass
 
-    # dustcoin
-    try:
-        fullstr = prestr + "dustcoin"
-        print fullstr + (79-len(fullstr))*" " + "\r",
-        usock = urllib2.urlopen('http://dustcoin.com/mining')
-        data = usock.read()
-        usock.close()
-        soup = BeautifulSoup(data)
-        table_dustcoin = soup.findAll('tr',{ "class":"coin" })
-    except:
-        pass
+        # dustcoin
+        elif x=='dustcoin':
+            try:
+                fullstr = prestr + "dustcoin"
+                print fullstr + (79-len(fullstr))*" " + "\r",
+                usock = urllib2.urlopen('http://dustcoin.com/mining')
+                data = usock.read()
+                usock.close()
+                soup = BeautifulSoup(data)
+                table_dustcoin = soup.findAll('tr',{ "class":"coin" })
+            except:
+                pass
 
-    # coinotron
-    try:
-        fullstr = prestr + "coinotron"
-        print fullstr + (79-len(fullstr))*" " + "\r",
-        usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
-        data = usock.read()
-        usock.close()
-        soup = BeautifulSoup(data)
-        table_coinotron = soup.findAll('tr')
-    except:
-        pass
+        # coinotron
+        elif x=='coinotron':
+            try:
+                fullstr = prestr + "coinotron"
+                print fullstr + (79-len(fullstr))*" " + "\r",
+                usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
+                data = usock.read()
+                usock.close()
+                soup = BeautifulSoup(data)
+                table_coinotron = soup.findAll('tr')
+            except:
+                pass
 
 
     # assign data to coins
