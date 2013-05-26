@@ -184,11 +184,12 @@ while True:
     #get data from sources
     print "\n\n\n<<< Round %d >>>" % (cnt_all+1)
     print "time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    prestr = "\r" + 79*" " + "\r" + "getting data... "
+    prestr = "getting data... "
 
     #coinchoose
     try:
-        print prestr + "coinchoose",
+        fullstr = prestr + "coinchoose"
+        print fullstr + (79-len(fullstr))*" " + "\r",
         req = urllib2.Request("http://www.coinchoose.com/api.php")
         opener_cc = urllib2.build_opener()
         opener_cc.addheaders = [('User-agent', 'CryptoSwitcher')]
@@ -199,7 +200,8 @@ while True:
 
     #dustcoin
     try:
-        print prestr + "dustcoin",
+        fullstr = prestr + "dustcoin"
+        print fullstr + (79-len(fullstr))*" " + "\r",
         usock = urllib2.urlopen('http://dustcoin.com/mining')
         data = usock.read()
         usock.close()
@@ -210,7 +212,8 @@ while True:
 
     #coinotron
     try:
-        print prestr + "coinotron",
+        fullstr = prestr + "coinotron"
+        print fullstr + (79-len(fullstr))*" " + "\r",
         usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
         data = usock.read()
         usock.close()
@@ -290,7 +293,8 @@ while True:
                 try:
                     #if this is the first time we come here, update btc as well.
                     #otherwise we are unable to calculate the profitabilty.
-                    print prestr + "difficulty of " + coins[abbreviation].name,
+                    fullstr = prestr + "difficulty of " + coins[abbreviation].name
+                    print fullstr + (79-len(fullstr))*" " + "\r",
                     if coins['btc'].reward == 0:
                         for item in data_cc:
                             if item['symbol'].lower()=='btc':
@@ -344,7 +348,8 @@ while True:
                     #btc-e
                     if y=='btce':
                         try:
-                            print prestr + "price of " + coins[abbreviation].name + " at BTC-E",
+                            fullstr = prestr + "price of " + coins[abbreviation].name + " at BTC-E"
+                            print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://btc-e.com/api/2/" + abbreviation + "_btc/ticker")
                             f = opener.open(req)
                             output = simplejson.load(f)
@@ -356,7 +361,8 @@ while True:
                     #bter
                     elif y=='bter':
                         try:
-                            print prestr + "price of " + coins[abbreviation].name + " at Bter",
+                            fullstr = prestr + "price of " + coins[abbreviation].name + " at Bter"
+                            print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://bter.com/api/1/ticker/" + abbreviation + "_btc")
                             f = opener.open(req)
                             output = simplejson.load(f)
@@ -368,7 +374,8 @@ while True:
                     #vircurex
                     elif y=='vircurex':
                         try:
-                            print prestr + "price of " + coins[abbreviation].name + " at Vircurex",
+                            fullstr = prestr + "price of " + coins[abbreviation].name + " at Vircurex"
+                            print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://vircurex.com/api/get_highest_bid.json?base=" + abbreviation + "&alt=btc")
                             f = opener.open(req)
                             output = simplejson.load(f)
@@ -402,7 +409,8 @@ while True:
     if coins['ixc'].willingToMine:
         coins['btc'].ratio +=coins['ixc'].ratio
 
-    print prestr + "done"
+    fullstr = prestr + "done"
+    print fullstr + (79-len(fullstr))*" " + "\r"
 
 
     #Now get data for vanity mining
@@ -530,6 +538,6 @@ while True:
     print 'Going to sleep...'
     i=0
     while i<idletime*60:
-        print "\r" + 79*" " + "\r" + "Seconds remaining:", (idletime*60-i),
+        print "Seconds remaining:", (idletime*60-i), " ", "\r",
         time.sleep(1)
         i+=1
