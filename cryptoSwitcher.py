@@ -233,7 +233,6 @@ while True:
         for x in source:
             if x=='coinchoose':
                 try:
-                    print prestr + abbreviation + ": ",
                     for item in data_cc:
                         if item['symbol'].lower()==abbreviation:
                             coins[item['symbol'].lower()].ratio = float(item['ratio'])
@@ -465,7 +464,7 @@ while True:
         for abbreviation, c in coins.items():
             c.miningNow = False
         coins[bestcoin].miningNow = True
-        #subprocess.Popen(coins[bestcoin].command)
+        subprocess.Popen(coins[bestcoin].command)
 
     #Sell some coins if that's what we're into
     for abbreviation, c in coins.items():

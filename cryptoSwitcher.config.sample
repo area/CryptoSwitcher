@@ -135,7 +135,7 @@ hashrate_sha256=1350000
 [Misc]
 
 # Idle Time (in minutes) between two checks of coin profitability.
-idletime = 1
+idletime = 5
 
 # And now some information to calculate Vanity Address mining profitability.
 # The figures that go in here depend on your hardware.
