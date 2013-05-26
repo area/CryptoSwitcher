@@ -196,7 +196,7 @@ while True:
         f = opener_cc.open(req)
         data_cc = simplejson.load(f)
     except:
-        null
+        pass
 
     #dustcoin
     try:
@@ -208,7 +208,7 @@ while True:
         soup = BeautifulSoup(data)
         table_dustcoin = soup.findAll('tr',{ "class":"coin" })
     except:
-        null
+        pass
 
     #coinotron
     try:
@@ -220,7 +220,7 @@ while True:
         soup = BeautifulSoup(data)
         table_coinotron = soup.findAll('tr')
     except:
-        null
+        pass
 
 
     #assign data to coins
