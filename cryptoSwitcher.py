@@ -93,17 +93,34 @@ for key in coins:
         continue
 
 # read source list
-source = [x.strip() for x in Config.get('Data-Source','source').split(',')]
+try:
+    source = [x.strip() for x in Config.get('Data-Source','source').split(',')]
+except:
+    sys.exit("ERROR: Cannot read source from config file.")
+
 
 # read source list
-source_cryptoswitcher = [x.strip() for x in Config.get('Data-Source','source_cryptoswitcher').split(',')]
+try:
+    source_cryptoswitcher = [x.strip() for x in Config.get('Data-Source','source_cryptoswitcher').split(',')]
+except:
+    source_cryptoswitcher = ''
+    print "warning: couldnt read source_cryptoswitcher from config file. Leaving blank."
 
 # read hashrates
-hashrate_sha256 = int(Config.get('Data-Source','hashrate_sha256'))
-hashrate_scrypt = int(Config.get('Data-Source','hashrate_scrypt'))
+try:
+    hashrate_sha256 = int(Config.get('Data-Source','hashrate_sha256'))
+    hashrate_scrypt = int(Config.get('Data-Source','hashrate_scrypt'))
+except:
+    hashrate_sha256 = 1000
+    hashrate_scrypt = 1
+    print "warning: couldnt read hashrates from config file. Setting to 1:1000."
 
 # get idle time between two profitability check cycles
-idletime = int(Config.get('Misc','idletime'))
+try:
+    idletime = int(Config.get('Misc','idletime'))
+except:
+    idletime = 5
+    print "warning: couldnt read idletime from config file. Setting to 5 min."
 
 # get the coinfees
 for key in coins:
@@ -114,15 +131,23 @@ for key in coins:
 
 
 # And now some information to calculate Vanity Address mining profitability
-gkeypersec = float(Config.get('Misc','gkeypersec')) #Gigakeys per second you can test
-ghashpersec = float(Config.get('Misc','ghashpersec')) #Gigahash per second you can output doing normal BTC mining.
+try:
+    gkeypersec = float(Config.get('Misc','gkeypersec')) #Gigakeys per second you can test
+    ghashpersec = float(Config.get('Misc','ghashpersec')) #Gigahash per second you can output doing normal BTC mining.
+except:
+    print "warning: couldnt read gkeypersec and ghashpersec from config file."
 
 # If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
-enableBTCE = Config.getboolean('Sell','enableBTCE')
+try:
+    enableBTCE = Config.getboolean('Sell','enableBTCE')
 
-enableVircurex = Config.getboolean('Sell','enableVircurex')
-vircurexSecret = Config.get('Sell','vircurexSecret')
-vircurexUsername = Config.get('Sell','vircurexUsername')
+    enableVircurex = Config.getboolean('Sell','enableVircurex')
+    vircurexSecret = Config.get('Sell','vircurexSecret')
+    vircurexUsername = Config.get('Sell','vircurexUsername')
+except:
+    enableBTCE = False
+    enableVircurex = False
+    print "warning: couldnt read sell information from config file. Disabling auto sell."
 
 # And flag which coins you want to sell as they come in. These coins will only
 # sell for BTC, not for USD or any other cryptocoin.
