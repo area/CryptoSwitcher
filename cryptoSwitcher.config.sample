@@ -117,9 +117,9 @@ source=coinotron, coinchoose, dustcoin
 # due to its high fluctuation, a more accurate difficulty is downloaded from
 # cryptocoinexplorer.com. Prices are downloaded from the markets selected in the
 # source_cryptoswitcher list.
-# Available sources: btce, bter, vircurex
+# Available sources: btce, bter, vircurex, cryptsy
 # (only required if cryptoswitcher is in the source list)
-source_cryptoswitcher=btce, bter, vircurex
+source_cryptoswitcher=btce, bter, vircurex, cryptsy
 
 # Enter your hashrate (in hashs per seconds) of SHA-256 based currencies
 # (e.g. Bitcoin) and Scrypt based currencies (e.g. LiteCoin). The values are used

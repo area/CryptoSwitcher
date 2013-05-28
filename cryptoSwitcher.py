@@ -33,7 +33,7 @@ class Coin:
         self.m = 0
         self.h = 0
         self.fee = 0
-        self.source = ''
+        self.source = '--'
         self.price = 0.0
         self.diff = 9999999999.9 # start off with ridiculously high diff so we dont mine the wrong coin
         self.reward = 0
@@ -189,7 +189,7 @@ while True:
 
     for x in source:
         # coinchoose
-        if x=='coinchoose':
+        if x=='coinchoose' or x=='cryptoswitcher':
             try:
                 fullstr = prestr + "coinchoose"
                 print fullstr + (79-len(fullstr))*" " + "\r",
@@ -226,6 +226,22 @@ while True:
                 table_coinotron = soup.findAll('tr')
             except:
                 pass
+
+
+    for x in source_cryptoswitcher:
+        # cryptsy
+        if x=='cryptsy':
+            try:
+                fullstr = prestr + "cryptsy"
+                print fullstr + (79-len(fullstr))*" " + "\r",
+                req = urllib2.Request("https://www.cryptsy.com/api.php?method=orderdata")
+                opener_cyp = urllib2.build_opener()
+                opener_cyp.addheaders = [('User-agent', 'CryptoSwitcher')]
+                f = opener_cyp.open(req)
+                data_cyp = simplejson.load(f)
+            except:
+                pass
+
 
 
     # assign data to coins
@@ -347,7 +363,7 @@ while True:
                     # if coin profitability couldnt be processed manually in the
                     # last round, then they are probably not traded on the chosen
                     # markets. so the coin is removed from manual processing.
-                    if coins[abbreviation].source != '' and coins[abbreviation].source != 'cs':
+                    if coins[abbreviation].source != '--' and coins[abbreviation].source != 'cs':
                         continue
 
                     # btc-e
@@ -386,6 +402,20 @@ while True:
                             output = simplejson.load(f)
                             if coins[abbreviation].price < float(output['value']):
                                 coins[abbreviation].price = float(output['value'])
+                        except:
+                            continue
+
+                    # cryptsy
+                    elif y=='cryptsy':
+                        try:
+                            fullstr = prestr + "price of " + coins[abbreviation].name + " at Cryptsy"
+                            print fullstr + (79-len(fullstr))*" " + "\r",
+                            for item in data_cyp['return']:
+                                if item.lower()==abbreviation:
+                                    if coins[abbreviation].price < float(data_cyp['return'][item]['buyorders'][0]['price']):
+                                        coins[abbreviation].price = float(data_cyp['return'][item]['buyorders'][0]['price'])
+                                    success = 1
+                                    break
                         except:
                             continue
 
@@ -460,7 +490,7 @@ while True:
         if c.willingToMine:
             print "%11s: %3d  (fee: %2d, src: %s)" % (coins[abbreviation].name, c.ratio, coins[abbreviation].fee, coins[abbreviation].source),
             if extout == True:
-                if coins[abbreviation].source == "cs" or coins[abbreviation].source == "--":
+                if coins[abbreviation].source == "cs" or abbreviation == "btc":
                     print "(pr: %.5f, di[%s]: %.2f)" % (coins[abbreviation].price, coins[abbreviation].algo, coins[abbreviation].diff),
                 else:
                     # if diff is valid print it
@@ -511,7 +541,7 @@ while True:
     median_all = 0
     cnt_all = 0
     for abbreviation, c in coins.items():
-        if c.willingToMine:
+        if c.willingToMine and (not c.merged):
             coins[abbreviation].h, coins[abbreviation].m = divmod(coins[abbreviation].cnt*idletime, 60)
             if coins[abbreviation].h < 10:
                 sname += "%5s  " % (abbreviation.upper())
