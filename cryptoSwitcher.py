@@ -96,7 +96,12 @@ for key in coins:
 try:
     source = [x.strip() for x in Config.get('Data-Source','source').split(',')]
 except:
-    sys.exit("ERROR: Cannot read source from config file.")
+    try:
+        source = [x.strip() for x in Config.get('Misc','source').split(',')]
+        print "warning: you are using an old config file structure. please update using the config sample file."
+    except:
+        sys.exit("ERROR: Cannot read source from config file.")
+
 
 
 # read source list
