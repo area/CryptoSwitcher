@@ -6,11 +6,12 @@ using the powers of http://dustcoin.com.
 
 Dependencies
 ---
-* cgminer
-* vanityminer
 * BeautifulSoup4
 * urllib2
 * btce-api (included)
+* pyvircurex (included)
+* cgminer (optional)
+* vanityminer (optional)
 
 Usage
 ---
