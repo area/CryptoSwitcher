@@ -1,0 +1,5 @@
+*.sh
+*.bat
+*.bin
+cgminer/
+cryptoSwitcher.config
