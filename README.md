@@ -20,7 +20,8 @@ miner inside a `screen` session, which the two example scripts I've included
 will do. Then poke around in `cryptoSwitcher.config.sample to set everything
 up, including which coins you wish to try and mine or merged mine. Then run
     
-    git submodule init git submodule update
+    git submodule init
+    git submodule update
 
 to download the BTC-e python API. Then rename `cryptoSwitcher.config.sample` to
 `cryptoSwitcher.config` and run
