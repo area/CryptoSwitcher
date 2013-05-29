@@ -1,0 +1,7 @@
+[submodule "pyvircurex"]
+	path = pyvircurex
+	url = https://github.com/area/pyvircurex.git
+	
+[submodule "btce-api"]
+	path = btce-api
+	url = https://github.com/area/btce-api.git
