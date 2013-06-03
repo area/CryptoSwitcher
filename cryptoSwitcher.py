@@ -226,7 +226,7 @@ while True:
                 req = urllib2.Request("http://www.coinchoose.com/api.php")
                 opener_cc = urllib2.build_opener()
                 opener_cc.addheaders = [('User-agent', 'CryptoSwitcher')]
-                f = opener_cc.open(req)
+                f = opener_cc.open(req, timeout = 5)
                 data_cc = simplejson.load(f)
             except:
                 pass
@@ -236,7 +236,7 @@ while True:
             try:
                 fullstr = prestr + "dustcoin"
                 print fullstr + (79-len(fullstr))*" " + "\r",
-                usock = urllib2.urlopen('http://dustcoin.com/mining')
+                usock = urllib2.urlopen('http://dustcoin.com/mining', timeout = 5)
                 data = usock.read()
                 usock.close()
                 soup = BeautifulSoup(data)
@@ -249,7 +249,7 @@ while True:
             try:
                 fullstr = prestr + "coinotron"
                 print fullstr + (79-len(fullstr))*" " + "\r",
-                usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home')
+                usock = urllib2.urlopen('https://coinotron.com/coinotron/AccountServlet?action=home', timeout = 5)
                 data = usock.read()
                 usock.close()
                 soup = BeautifulSoup(data)
@@ -267,7 +267,7 @@ while True:
                 req = urllib2.Request("https://www.cryptsy.com/api.php?method=orderdata")
                 opener_cyp = urllib2.build_opener()
                 opener_cyp.addheaders = [('User-agent', 'CryptoSwitcher')]
-                f = opener_cyp.open(req)
+                f = opener_cyp.open(req, timeout = 5)
                 data_cyp = simplejson.load(f)
             except:
                 pass
@@ -369,7 +369,7 @@ while True:
                     # for trc: use a different source for difficulty
                     if abbreviation == 'trc':
                         req = urllib2.Request("http://cryptocoinexplorer.com:3750/chain/Terracoin/q/getdifficulty")
-                        f = opener.open(req)
+                        f = opener.open(req, timeout = 5)
                         coins['trc'].diff = simplejson.load(f)
 
                     # for btc: we dont need to calculate
@@ -402,7 +402,7 @@ while True:
                             fullstr = prestr + "price of " + coins[abbreviation].name + " at BTC-E"
                             print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://btc-e.com/api/2/" + abbreviation + "_btc/ticker")
-                            f = opener.open(req)
+                            f = opener.open(req, timeout = 5)
                             output = simplejson.load(f)
                             if coins[abbreviation].price < float(output['ticker']['sell']):
                                 coins[abbreviation].price = float(output['ticker']['sell'])
@@ -415,7 +415,7 @@ while True:
                             fullstr = prestr + "price of " + coins[abbreviation].name + " at Bter"
                             print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://bter.com/api/1/ticker/" + abbreviation + "_btc")
-                            f = opener.open(req)
+                            f = opener.open(req, timeout = 5)
                             output = simplejson.load(f)
                             if coins[abbreviation].price < float(output['buy']):
                                 coins[abbreviation].price = float(output['buy'])
@@ -428,7 +428,7 @@ while True:
                             fullstr = prestr + "price of " + coins[abbreviation].name + " at Vircurex"
                             print fullstr + (79-len(fullstr))*" " + "\r",
                             req = urllib2.Request("https://vircurex.com/api/get_highest_bid.json?base=" + abbreviation + "&alt=btc")
-                            f = opener.open(req)
+                            f = opener.open(req, timeout = 5)
                             output = simplejson.load(f)
                             if coins[abbreviation].price < float(output['value']):
                                 coins[abbreviation].price = float(output['value'])
