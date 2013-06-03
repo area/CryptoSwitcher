@@ -9,67 +9,76 @@
 [MineCoins]
 
 # Enable the coins you want to mine here.
-minebqc = False
-minebtb = False
-minebtc = True
-minebte = False
-minecnc = False
-minedgc = False
-mineelc = False
-minefrc = False
-mineftc = False
-minegld = False
-minejkc = False
-mineltc = True
-minemnc = False
-minenvc = False
-mineppc = False
-minepwc = False
-mineryc = False
-minetrc = False
-minewdc = False
+mineBQC = False
+mineBTB = False
+mineBTC = True
+mineBTE = False
+mineCNC = False
+mineDGC = False
+mineELC = False
+mineFRC = False
+mineFRK = False
+mineFTC = False
+mineGLD = False
+mineJKC = False
+mineLKY = False
+mineLTC = True
+mineMNC = False
+mineNBL = False
+mineNVC = False
+minePPC = False
+minePWC = False
+minePXC = False
+mineRYC = False
+mineTRC = False
+mineWDC = False
+# mineYAC = False <-- available on cryptsy but isn't scraped by CS for some reason.
 
 # BTC Merged mining coins.
-# Will be added to Bitcoin profitibilty when True.
-minedvc = True
-mineixc = True
-minenmc = True
+# Will be added to Bitcoin profitibilty when enabled.
+mineDVC = True
+mineIXC = True
+mineNMC = True
 
-# If you want to mine vanity addresses, then set this to True
-minevanity = False
+# Enable to mine vanity addresses.
+mineVANITY = False
 
 
 ################################################################################
 [Scripts]
 
-# You should have scripts that stop all other forms of mining,
-# set all necesary environment variables,
-# and start mining the appropriate coin.
+# You should have scripts that stop all other forms of mining, set all necesary
+#  environment variables, and start mining the appropriate coin.
 
 # Examples included are 'litecoin.sh' and 'bitcoin.sh'.
 # Any coins you aren't mining you can just leave blank.
 # For Windows you can use bat-files, eg "btcscript = bitcoin.bat".
-bqcscript =
-btbscript =
-btcscript = bitcoin.bat
-btescript =
-cncscript =
-dgcscript =
-elcscript =
-frcscript =
-ftcscript =
-gldscript =
-jkcscript =
-ltcscript = ./litecoin.sh
-mncscript =
-nvcscript =
-ppcscript =
-pwcscript =
-rycscript =
-trcscript =
-wdcscript =
+BQCscript =
+BTBscript =
+BTCscript = bitcoin.bat
+BTEscript = 
+CNCscript = 
+DGCscript = 
+ELCscript = 
+FRCscript =
+FRKscript =
+FTCscript =
+GLDscript =
+JKCscript = 
+LKYscript =
+LTCscript = ./litecoin.sh
+MNCscript =
+NBLscript =
+NVCscript =
+PPCscript =
+PWCscript =
+PXCscript =
+RYCscript =
+TRCscript =
+WDCscript =
+# YACscript = <-- available on cryptsy but isn't scraped by CS for some reason.
 
-vanityscript =
+VANITYscript =
 
 
 ################################################################################
@@ -78,57 +87,51 @@ vanityscript =
 # Set specific fees for every coin (in percent).
 # The fee simply adds to the profitability before calculating the most profitable coin.
 # Negative values are also allowed, they increase the profitability.
-feebqc = 2
-feebtb = 0
-feebtc = 1.5
-feebte = 0
-feecnc = -2
-feedgc = 2
-feeelc = 0
-feefrc = 2
-feeftc = 2
-feegld = 2
-feejkc = 0
-feeltc = 2
-feemnc = 0
-feenvc = 0
-feeppc = 2
-feepwc = 0
-feeryc = 0
-feetrc = 2
-feewdc = 0
+feeBQC = 0
+feeBTB = 0
+feeBTC = 1.5
+feeBTE = 0
+feeCNC = 0
+feeDGC = 0
+feeELC = 0
+feeFRC = 0
+feeFRK = 0
+feeFTC = 0
+feeGLD = 0
+feeJKC = 0
+feeLKY = 0
+feeLTC = 2
+feeMNC = 0
+feeNBL = 0
+feeNVC = 0
+feePPC = 0
+feePWC = 0
+feePXC = 0
+feeRYC = 0
+feeTRC = 0
+feeWDC = 0
+# feeYAC = 0 <-- available on cryptsy but isn't scraped by CS for some reason.
 
 
 ################################################################################
 [Data-Source]
 
-# What source for our data should we use? ChooseCoin is probably better,
-# in that it lists more coins. Coinotron seems to be updated most frequently.
-# The first entry in the list has the highest priority and is used first. If the
-# site is down, the second source is used.
-# CryptoSwitcher can also do the profitability calculation itself. To let enable
-# add cryptoswitcher to the list.
+# Source list for determining mining profitability.
+# The first entry in the source list has the highest priority and is used first.
+# If the site is down or a certain coin is not found the next source is used.
 # Available sources: cryptoswitcher, coinotron, coinchoose, dustcoin
 source=coinotron, coinchoose, dustcoin
 
-# If CryptoSwitcher is added to the source list, it calculates the profitability
-# itself by using the current difficulty and market sell prices.
-# The difficulty values are downloaded from CoinChoose, except for TerraCoin,
-# due to its high fluctuation, a more accurate difficulty is downloaded from
-# cryptocoinexplorer.com. Prices are downloaded from the markets selected in the
-# source_cryptoswitcher list.
+# If using CryptoSwitcher as a source, list markets to source prices from.
+# Difficulty is acquired from coinchoose and cryptocoinexplorer.
 # Available sources: btce, bter, vircurex, cryptsy
-# (only required if cryptoswitcher is in the source list)
 source_cryptoswitcher=btce, bter, vircurex, cryptsy
 
-# Enter your hashrate (in hashs per seconds) of SHA-256 based currencies
-# (e.g. Bitcoin) and Scrypt based currencies (e.g. LiteCoin). The values are used
-# when CryptoSwitcher is enabled to calculate the profitability. You can get the
-# value of your machine e.g. by running cgminer for a short while. The difference
-# between the two hashrates should be around 1:1000.
-# (only required if cryptoswitcher is in the source list)
-hashrate_scrypt=1450
+# Hashrates used in calculations when using CryptoSwitcher as a source.
+# Measured in hashes per second. Can be acquired by testmining with cgminer.
+# sha256 is used by Bitcoin etc. while scrypt is used by Litecoin etc.
 hashrate_sha256=1350000
+hashrate_scrypt=1450
 
 
 ################################################################################
@@ -137,14 +140,11 @@ hashrate_sha256=1350000
 # Idle Time (in minutes) between two checks of coin profitability.
 idletime = 5
 
-# And now some information to calculate Vanity Address mining profitability.
-# The figures that go in here depend on your hardware.
-# If you're not doing vanity mining, you can leave these blank.
-# Gigakeys per second you can test
-gkeypersec = 0.05
-
 # Gigahash per second you can output doing normal BTC mining.
 ghashpersec = 0.7
+
+# Gigakeys per second you can output doing vanity address mining.
+gkeypersec = 0.05
 
 
 ################################################################################
@@ -175,4 +175,4 @@ sellNMC = False
 sellNVC = False
 sellPPC = False
 sellTRC = False
-#sellYAC = False <- Not minable through cryptoswitcher.
+# sellYAC = False <- Not yet minable through cryptoswitcher.

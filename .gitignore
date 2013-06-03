@@ -2,4 +2,6 @@
 *.bat
 *.bin
 cgminer/
+vanityminer/
 cryptoSwitcher.config
+default.conf
