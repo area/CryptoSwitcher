@@ -167,6 +167,16 @@ for key in coins:
     except:
         continue
 
+#Trade multiplier. i.e. Don't sell for the highest current bid if this is
+#larger than 1, but make a new ask at highest_bid * tradeMultiplier.
+
+tradeMultiplier = 1
+try: 
+    tradeMultiplier = float(Config.get('Misc','tradeMultiplier'))
+except:
+    pass
+
+
 
 def sellCoinBTCE(coin, tradeapi):
     r = tradeapi.getInfo()
@@ -178,10 +188,13 @@ def sellCoinBTCE(coin, tradeapi):
     if balance > 0.1:
         # i.e. if we're selling and we have some to sell that's larger than the minimum order...
         asks, bids = btceapi.getDepth(coin + '_btc')
-        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0],balance)
-        # This sells at the highest price someone currently has a bid lodged for.
-        # It's possible that this won't totally deplete our reserves, but any
-        # unsold immediately will be left on the book, and will probably sell shortly.
+        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0]*tradeMultiplier,balance)
+        # If tradeMultiplier is 1, then this sells at the highest price someone
+        # currently has a bid lodged for.  It's possible that this won't
+        # totally deplete our reserves, but any unsold immediately will be left
+        # on the book, and will probably sell shortly.
+        # A higher trade multiplier than 1 will not sell right away, but will
+        # leave an order on the book.
 
 def sellCoinVircurex(coin):
     pair = vircurexapi.Pair(coin+'_btc')
@@ -193,7 +206,7 @@ def sellCoinVircurex(coin):
     account = vircurexapi.Account(vircurexUsername, vircurexSecret)
     balance = account.balance(coin.upper())
     if balance >= 0.1:
-        order = account.sell(coin.upper(),balance, 'BTC', bid)
+        order = account.sell(coin.upper(),balance, 'BTC', bid*tradeMultiplier)
         account.release_order(order['orderid'])
 
 if enableBTCE:
