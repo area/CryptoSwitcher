@@ -152,13 +152,16 @@ except:
 # If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
 try:
     enableBTCE = Config.getboolean('Sell','enableBTCE')
-
     enableVircurex = Config.getboolean('Sell','enableVircurex')
+    enableCryptsy = Config.getboolean("Sell", "enableCryptsy")
     vircurexSecret = Config.get('Sell','vircurexSecret')
     vircurexUsername = Config.get('Sell','vircurexUsername')
+    cryptsyPubkey = Config.get("Sell", "cryptsyPublicKey")
+    cryptsyPrivkey = Config.get("Sell", "cryptsyPrivateKey")
 except:
     enableBTCE = False
     enableVircurex = False
+    enableCryptsy = False
     print "warning: couldnt read sell information from config file. Disabling auto sell."
 
 # And flag which coins you want to sell as they come in. These coins will only
@@ -210,6 +213,9 @@ def sellCoinVircurex(coin):
     if balance >= 0.1:
         order = account.sell(coin.upper(),balance, 'BTC', bid*tradeMultiplier)
         account.release_order(order['orderid'])
+
+def sellCoinCryptsy(coin):
+    return
 
 if enableBTCE:
     key_file = './key'
