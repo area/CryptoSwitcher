@@ -1,0 +1,39 @@
+
+*** These modified files were found in JOE when it aborted on Mon Jun 17 13:38:29 2013
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+configure.ac
+configure.in
+hello
+lite
+Lite
+/dev/sda
+.lanbox
+
+*** File '(Unnamed)'
+vg_encode_privkey
+vg_encode_privkey
+addr_buf
+vg_encode_address
+load
+filename
+Error loading
+.files
+####
+1.01
+trade
+
+*** File '(Unnamed)'
+check-switcher.sh
+check-switcher.sh
+/tmp/crontab.XXXXgZN6iY
+/tmp/crontab.XXXXzXTmzp
+cryptoSwitcher.py
+cryptoSwitcher.py
+cryptoSwitcher.py
+.git/config
+cryptoSwitcher.py
+CryptoSwitcher/cryptoSwitcher.config
+cryptoSwitcher.py
+pyvircurex/vircurex/common.py

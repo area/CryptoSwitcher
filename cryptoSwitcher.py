@@ -9,6 +9,8 @@ sys.path.insert(0, './btce-api/')
 import btceapi
 sys.path.insert(0, './pyvircurex/')
 import vircurex as vircurexapi
+sys.path.insert(0, './PyCryptsy/')
+from PyCryptsy import PyCryptsy
 
 import ConfigParser
 
