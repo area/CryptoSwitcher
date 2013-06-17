@@ -615,15 +615,20 @@ while True:
     smedian_all = '# Total Median:%5d' % (median_all)
     stime_all = '# Total Time:%4d:%02d' % (divmod(cnt_all*idletime, 60))
 
-    # fill strings to screen width and add "#" to the end
-    sname = "%s%s%s" % (sname, " "*(79-len(sname)), "#")
-    smedian = "%s%s%s" % (smedian, " "*(79-len(smedian)), "#")
-    stime = "%s%s%s" % (stime, " "*(79-len(stime)), "#")
-    smedian_all = "%s%s%s" % (smedian_all, " "*(79-len(smedian_all)), "#")
-    stime_all = "%s%s%s" % (stime_all, " "*(79-len(stime_all)), "#")
+#    # fill strings to screen width and add "#" to the end
+#    sname = "%s%s%s" % (sname, " "*(79-len(sname)), "#")
+#    smedian = "%s%s%s" % (smedian, " "*(79-len(smedian)), "#")
+#    stime = "%s%s%s" % (stime, " "*(79-len(stime)), "#")
+#    smedian_all = "%s%s%s" % (smedian_all, " "*(79-len(smedian_all)), "#")
+#    stime_all = "%s%s%s" % (stime_all, " "*(79-len(stime_all)), "#")
 
     # output status strings
-    print "\n", "#"*80+sname+smedian+stime+smedian_all+stime_all+"#"*80
+#    print "\n", "#"*80+sname+smedian+stime+smedian_all+stime_all+"#"*80
+    print "\n", sname
+    print smedian
+    print stime
+    print smedian_all
+    print stime_all, "\n"
 
     # sleep
     print 'Going to sleep...'

@@ -4,4 +4,4 @@
 cgminer/
 vanityminer/
 cryptoSwitcher.config
-default.conf
+default.conf*~
