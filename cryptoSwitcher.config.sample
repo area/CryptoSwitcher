@@ -148,7 +148,7 @@ gkeypersec = 0.05
 
 #Trade multiplier - if not 1, sells not at the highest bid, but at this
 #multiple of it.  
-tradeMultiplier = 1
+tradeMultiplier = 1.01
 ################################################################################
 [Sell]
 
