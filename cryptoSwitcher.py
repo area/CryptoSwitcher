@@ -587,6 +587,8 @@ while True:
         # elif c.willingToSell and c.miningNow and enableVircurex:
         if c.willingToSell and enableVircurex and (c.miningNow or c.merged):
             sellCoinVircurex(abbreviation)
+        if c.willingToSell and enableCryptsy and (c.miningNow or c.merged):
+            sellCoinCryptsy(abbreviation)
 
     # ...and now save the keyfile in case the script is aborted.
     if enableBTCE:
