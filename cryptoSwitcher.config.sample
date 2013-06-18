@@ -172,14 +172,24 @@ cryptsyPrivateKey = YOUR_CRYPTSY_API_PRIVATE_KEY
 
 # Enable the coins you want to sell here.
 sellBQC = False
+sellBTB = False
 sellCNC = False
+sellDGC = False
 sellDVC = False
+sellELC = False
 sellFRC = False
+sellFRK = False
 sellFTC = False
 sellIXC = False
+sellLKY = False
 sellLTC = False
+sellMNC = False
+sellNBL = False
 sellNMC = False
 sellNVC = False
 sellPPC = False
+sellPWC = False
+sellPXC = False
 sellTRC = False
+sellWDC = False
 # sellYAC = False <- Not yet minable through cryptoswitcher.
