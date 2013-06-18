@@ -318,7 +318,7 @@ while True:
                 try:
                     for item in data_cc:
                         if item['symbol'].lower()==abbreviation:
-                            coins[item['symbol'].lower()].ratio = float(item['ratio'])
+                            coins[item['symbol'].lower()].ratio = float(item['adjustedratio'])
                             coins[item['symbol'].lower()].source = 'cc'
                             success = 1
                             break
