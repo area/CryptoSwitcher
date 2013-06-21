@@ -61,7 +61,7 @@ mineVANITY = False
 # You should have scripts that stop all other forms of mining, set all necesary
 #  environment variables, and start mining the appropriate coin.
 
-# Examples included are 'litecoin.sh' and 'bitcoin.sh'.
+# Examples included are 'litecoin.sh.sample' and 'bitcoin.sh.sample'.
 # Any coins you aren't mining you can just leave blank.
 # For Windows you can use bat-files, eg "BTCscript = bitcoin.bat".
 AMCscript = 
