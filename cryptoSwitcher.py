@@ -40,6 +40,7 @@ class Coin:
         self.algo = ""
 
 coins = {}
+coins['amc'] =  Coin('AmericanCoin')
 coins['bqc'] =  Coin('BBQCoin')
 coins['btb'] =  Coin('Bitbar')
 coins['btc'] =  Coin('Bitcoin')
