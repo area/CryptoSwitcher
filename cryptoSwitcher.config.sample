@@ -146,15 +146,10 @@ ghashpersec = 0.7
 # Gigakeys per second you can output doing vanity address mining.
 gkeypersec = 0.05
 
-<<<<<<< HEAD
 # Trade multiplier - if not 1, sells not at the highest bid, but at this
 #  multiple of it.  
-tradeMultiplier = 1
-=======
-#Trade multiplier - if not 1, sells not at the highest bid, but at this
-#multiple of it.  
 tradeMultiplier = 1.01
->>>>>>> 68182c5b47930d0e70b798db99d45acaab545664
+
 ################################################################################
 [Sell]
 
