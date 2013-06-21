@@ -5,3 +5,6 @@
 [submodule "btce-api"]
 	path = btce-api
 	url = https://github.com/area/btce-api.git
+[submodule "PyCryptsy"]
+	path = PyCryptsy
+	url = https://github.com/salfter/PyCryptsy.git

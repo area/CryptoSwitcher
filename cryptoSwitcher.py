@@ -9,6 +9,8 @@ sys.path.insert(0, './btce-api/')
 import btceapi
 sys.path.insert(0, './pyvircurex/')
 import vircurex as vircurexapi
+sys.path.insert(0, './PyCryptsy/')
+from PyCryptsy import PyCryptsy
 
 import ConfigParser
 
@@ -151,13 +153,16 @@ except:
 # If you want to sell your coins on BTCE ASAP, then there's a bit more setup for you
 try:
     enableBTCE = Config.getboolean('Sell','enableBTCE')
-
     enableVircurex = Config.getboolean('Sell','enableVircurex')
+    enableCryptsy = Config.getboolean("Sell", "enableCryptsy")
     vircurexSecret = Config.get('Sell','vircurexSecret')
     vircurexUsername = Config.get('Sell','vircurexUsername')
+    cryptsyPubkey = Config.get("Sell", "cryptsyPublicKey")
+    cryptsyPrivkey = Config.get("Sell", "cryptsyPrivateKey")
 except:
     enableBTCE = False
     enableVircurex = False
+    enableCryptsy = False
     print "warning: couldnt read sell information from config file. Disabling auto sell."
 
 # And flag which coins you want to sell as they come in. These coins will only
@@ -209,6 +214,12 @@ def sellCoinVircurex(coin):
     if balance >= 0.1:
         order = account.sell(coin.upper(),balance, 'BTC', bid*tradeMultiplier)
         account.release_order(order['orderid'])
+
+def sellCoinCryptsy(coin):
+    acct = PyCryptsy(cryptsyPubkey, cryptsyPrivkey)
+    bal = acct.GetAvailableBalance(coin)
+    acct.CreateSellOrder(coin, "BTC", bal, acct.GetBuyPrice(coin, "BTC")*tradeMultiplier)
+    return
 
 if enableBTCE:
     key_file = './key'
@@ -308,7 +319,7 @@ while True:
                 try:
                     for item in data_cc:
                         if item['symbol'].lower()==abbreviation:
-                            coins[item['symbol'].lower()].ratio = float(item['ratio'])
+                            coins[item['symbol'].lower()].ratio = float(item['adjustedratio'])
                             coins[item['symbol'].lower()].source = 'cc'
                             success = 1
                             break
@@ -577,6 +588,8 @@ while True:
         # elif c.willingToSell and c.miningNow and enableVircurex:
         if c.willingToSell and enableVircurex and (c.miningNow or c.merged):
             sellCoinVircurex(abbreviation)
+        if c.willingToSell and enableCryptsy and (c.miningNow or c.merged):
+            sellCoinCryptsy(abbreviation)
 
     # ...and now save the keyfile in case the script is aborted.
     if enableBTCE:
@@ -616,15 +629,20 @@ while True:
     smedian_all = '# Total Median:%5d' % (median_all)
     stime_all = '# Total Time:%4d:%02d' % (divmod(cnt_all*idletime, 60))
 
-    # fill strings to screen width and add "#" to the end
-    sname = "%s%s%s" % (sname, " "*(79-len(sname)), "#")
-    smedian = "%s%s%s" % (smedian, " "*(79-len(smedian)), "#")
-    stime = "%s%s%s" % (stime, " "*(79-len(stime)), "#")
-    smedian_all = "%s%s%s" % (smedian_all, " "*(79-len(smedian_all)), "#")
-    stime_all = "%s%s%s" % (stime_all, " "*(79-len(stime_all)), "#")
+#    # fill strings to screen width and add "#" to the end
+#    sname = "%s%s%s" % (sname, " "*(79-len(sname)), "#")
+#    smedian = "%s%s%s" % (smedian, " "*(79-len(smedian)), "#")
+#    stime = "%s%s%s" % (stime, " "*(79-len(stime)), "#")
+#    smedian_all = "%s%s%s" % (smedian_all, " "*(79-len(smedian_all)), "#")
+#    stime_all = "%s%s%s" % (stime_all, " "*(79-len(stime_all)), "#")
 
     # output status strings
-    print "\n", "#"*80+sname+smedian+stime+smedian_all+stime_all+"#"*80
+#    print "\n", "#"*80+sname+smedian+stime+smedian_all+stime_all+"#"*80
+    print "\n", sname
+    print smedian
+    print stime
+    print smedian_all
+    print stime_all, "\n"
 
     # sleep
     print 'Going to sleep...'

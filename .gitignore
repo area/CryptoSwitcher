@@ -5,3 +5,5 @@ cgminer/
 vanityminer/
 cryptoSwitcher.config
 default.conf
+*~
+DEADJOE

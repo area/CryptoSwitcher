@@ -10,6 +10,7 @@ Dependencies
 * urllib2
 * btce-api (included)
 * pyvircurex (included)
+* PyCryptsy (included)
 * cgminer (optional)
 * vanityminer (optional)
 
@@ -24,8 +25,8 @@ up, including which coins you wish to try and mine or merged mine. Then run
     git submodule init
     git submodule update
 
-to download the BTC-e python API. Then rename `cryptoSwitcher.config.sample` to
-`cryptoSwitcher.config` and run
+to download the BTC-e, Vircurex, and Cryptsy python APIs. Then rename 
+`cryptoSwitcher.config.sample` to `cryptoSwitcher.config` and run
  
     python cryptoSwitcher.py
 
@@ -57,3 +58,4 @@ tipping the other people whose work is used here:
 * Fizzisist: `122LV3CNADj1yHU2tFPEhcCWR5QbfMzNcm` at time of writing, see http://www.fizzisist.com for latest
 * Alan McIntyre : `16vnh6gwFYLGneBa8JUk7NaXpEt3Qojqs1` at time of writing, see https://github.com/alanmcintyre/btce-api
 * sal002: Sign up for Vircurex through the referral link on http://www.coinchoose.com
+* Scott Alfter: `1TipsGocnz2N5qgAm9f7JLrsMqkb3oXe2` for PyCryptsy
