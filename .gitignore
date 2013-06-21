@@ -8,3 +8,13 @@ cryptoSwitcher.config
 default.conf
 *~
 DEADJOE
+
+# OS garbage
+.DS_Store
+.DS_Store?
+._*
+_*
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
