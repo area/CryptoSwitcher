@@ -217,7 +217,9 @@ def sellCoinVircurex(coin):
 def sellCoinCryptsy(coin):
     acct = PyCryptsy(cryptsyPubkey, cryptsyPrivkey)
     bal = acct.GetAvailableBalance(coin)
-    acct.CreateSellOrder(coin, "BTC", bal, acct.GetBuyPrice(coin, "BTC")*tradeMultiplier)
+    price = acct.GetBuyPrice(coin, "BTC")*tradeMultiplier
+    if price > 0:
+        acct.CreateSellOrder(coin, "BTC", bal, price)
     return
 
 if enableBTCE:
