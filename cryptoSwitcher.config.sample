@@ -1,41 +1,52 @@
-# ---------------------------------------
-# Cryptocurrency mining switcher config file
-# TipJar (BTC): 1NhathL6LpcgofDnHELSS6Hej6kU9xrVgp
-# Author: area
-# ---------------------------------------
+# -------------------------------------------------#
+# Cryptocurrency mining switcher config file       #
+# TipJar (BTC): 1NhathL6LpcgofDnHELSS6Hej6kU9xrVgp #
+# Author: area                                     #
+# -------------------------------------------------#
 
 
 ################################################################################
 [MineCoins]
 
 # Enable the coins you want to mine here.
+mineAMC = False
+mineARG = False
 mineBQC = False
 mineBTB = False
 mineBTC = True
-mineBTE = False
 mineCNC = False
 mineDGC = False
 mineELC = False
+mineEZC = False
 mineFRC = False
 mineFRK = False
+mineFST = False
 mineFTC = False
-mineGLD = False
-mineJKC = False
+mineHYC = False
 mineLKY = False
 mineLTC = True
+mineMEM = False
 mineMNC = False
 mineNBL = False
 mineNVC = False
 minePPC = False
-minePWC = False
 minePXC = False
-mineRYC = False
 mineTRC = False
 mineWDC = False
-# mineYAC = False <-- available on cryptsy but isn't scraped by CS for some reason.
 
-# BTC Merged mining coins.
-# Will be added to Bitcoin profitibilty when enabled.
+# Listed against LTC only (currently unusable by CS)
+mineDBL = False
+mineGLD = False
+mineJKC = False
+mineRYC = False
+
+# No data available from sources
+mineBTE = False
+minePWC = False
+mineMEC = False
+mineYAC = False
+
+# BTC Merged mining coins. Will be added to Bitcoin profitibilty when enabled.
 mineDVC = True
 mineIXC = True
 mineNMC = True
@@ -50,33 +61,41 @@ mineVANITY = False
 # You should have scripts that stop all other forms of mining, set all necesary
 #  environment variables, and start mining the appropriate coin.
 
-# Examples included are 'litecoin.sh' and 'bitcoin.sh'.
+# Examples included are 'litecoin.sh.sample' and 'bitcoin.sh.sample'.
 # Any coins you aren't mining you can just leave blank.
-# For Windows you can use bat-files, eg "btcscript = bitcoin.bat".
-BQCscript =
-BTBscript =
+# For Windows you can use bat-files, eg "BTCscript = bitcoin.bat".
+AMCscript = 
+ARGscript = 
+BQCscript = 
+BTBscript = 
 BTCscript = bitcoin.bat
 BTEscript = 
 CNCscript = 
+DBLscript = 
 DGCscript = 
 ELCscript = 
-FRCscript =
-FRKscript =
-FTCscript =
-GLDscript =
+EZCscript = 
+FRCscript = 
+FRKscript = 
+FSTscript = 
+FTCscript = 
+GLDscript = 
+HYCscript = 
 JKCscript = 
-LKYscript =
+LKYscript = 
 LTCscript = ./litecoin.sh
-MNCscript =
-NBLscript =
-NVCscript =
-PPCscript =
-PWCscript =
-PXCscript =
-RYCscript =
-TRCscript =
-WDCscript =
-# YACscript = <-- available on cryptsy but isn't scraped by CS for some reason.
+MECscript = 
+MEMscript = 
+MNCscript = 
+NBLscript = 
+NVCscript = 
+PPCscript = 
+PWCscript = 
+PXCscript = 
+RYCscript = 
+TRCscript = 
+WDCscript = 
+YACscript = 
 
 VANITYscript =
 
@@ -87,20 +106,28 @@ VANITYscript =
 # Set specific fees for every coin (in percent).
 # The fee simply adds to the profitability before calculating the most profitable coin.
 # Negative values are also allowed, they increase the profitability.
+feeAMC = 0
+feeARG = 0
 feeBQC = 0
 feeBTB = 0
 feeBTC = 1.5
 feeBTE = 0
 feeCNC = 0
+feeDBL = 0
 feeDGC = 0
 feeELC = 0
+feeEZC = 0
 feeFRC = 0
 feeFRK = 0
+feeFST = 0
 feeFTC = 0
 feeGLD = 0
+feeHYC = 0
 feeJKC = 0
 feeLKY = 0
 feeLTC = 2
+feeMEC = 0
+feeMEM = 0
 feeMNC = 0
 feeNBL = 0
 feeNVC = 0
@@ -110,7 +137,7 @@ feePXC = 0
 feeRYC = 0
 feeTRC = 0
 feeWDC = 0
-# feeYAC = 0 <-- available on cryptsy but isn't scraped by CS for some reason.
+feeYAC = 0
 
 
 ################################################################################
@@ -146,9 +173,11 @@ ghashpersec = 0.7
 # Gigakeys per second you can output doing vanity address mining.
 gkeypersec = 0.05
 
-#Trade multiplier - if not 1, sells not at the highest bid, but at this
-#multiple of it.  
+# Trade multiplier - if not 1, sells not at the highest bid, but at this
+#  multiple of it.  
 tradeMultiplier = 1.01
+
+
 ################################################################################
 [Sell]
 
@@ -171,25 +200,37 @@ cryptsyPublicKey = YOUR_CRYPTSY_API_PUBLIC_KEY
 cryptsyPrivateKey = YOUR_CRYPTSY_API_PRIVATE_KEY
 
 # Enable the coins you want to sell here.
+sellAMC = False
+sellARG = False
 sellBQC = False
 sellBTB = False
+sellBTE = False
 sellCNC = False
+sellDBL = False
 sellDGC = False
-sellDVC = False
 sellELC = False
+sellEZC = False
 sellFRC = False
 sellFRK = False
+sellFST = False
 sellFTC = False
-sellIXC = False
+sellGLD = False
+sellHYC = False
+sellJKC = False
 sellLKY = False
 sellLTC = False
+sellMEC = False
+sellMEM = False
 sellMNC = False
 sellNBL = False
-sellNMC = False
 sellNVC = False
 sellPPC = False
 sellPWC = False
 sellPXC = False
+sellRYC = False
 sellTRC = False
 sellWDC = False
-# sellYAC = False <- Not yet minable through cryptoswitcher.
+sellYAC = False
+mineDVC = False
+mineIXC = False
+mineNMC = False
