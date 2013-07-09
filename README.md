@@ -9,10 +9,11 @@ Dependencies
 * NumPy
 * BeautifulSoup4
 * urllib2
+* simplejson
+* PycURL
 * btce-api (included)
 * pyvircurex (included)
 * PyCryptsy (included)
-* PycURL (required by PyCryptsy)
 * cgminer (optional)
 * vanityminer (optional)
 
