@@ -12,6 +12,7 @@ Dependencies
 * btce-api (included)
 * pyvircurex (included)
 * PyCryptsy (included)
+* PycURL (required by PyCryptsy)
 * cgminer (optional)
 * vanityminer (optional)
 
