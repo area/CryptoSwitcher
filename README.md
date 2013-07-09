@@ -6,6 +6,7 @@ using the powers of http://dustcoin.com.
 
 Dependencies
 ---
+* NumPy
 * BeautifulSoup4
 * urllib2
 * btce-api (included)
