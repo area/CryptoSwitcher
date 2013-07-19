@@ -180,6 +180,9 @@ gkeypersec = 0.05
 #  multiple of it.  
 tradeMultiplier = 1.01
 
+# make sure our sell order is the lowest if tradeMultiplier > 1
+tradeMultiplierCheck = False
+
 
 ################################################################################
 [Sell]
