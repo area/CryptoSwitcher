@@ -190,7 +190,11 @@ try:
 except:
     pass
 
-
+tradeMultiplierCheck = False
+try:
+    tradeMultiplierCheck = Config.getboolean ('Misc', 'tradeMultiplierCheck')
+except:
+    pass
 
 def sellCoinBTCE(coin, tradeapi):
     r = tradeapi.getInfo()
@@ -202,7 +206,10 @@ def sellCoinBTCE(coin, tradeapi):
     if balance > 0.1:
         # i.e. if we're selling and we have some to sell that's larger than the minimum order...
         asks, bids = btceapi.getDepth(coin + '_btc')
-        tr = tradeapi.trade(coin + '_btc', 'sell',bids[0][0]*tradeMultiplier,balance)
+        price = bids[0][0]*tradeMultiplier
+        if price > asks[0][0] and tradeMultiplierCheck == True:
+            price = asks[0][0] - 0.00000001
+        tr = tradeapi.trade(coin + '_btc', 'sell', price, balance)
         # If tradeMultiplier is 1, then this sells at the highest price someone
         # currently has a bid lodged for.  It's possible that this won't
         # totally deplete our reserves, but any unsold immediately will be left
@@ -214,19 +221,26 @@ def sellCoinVircurex(coin):
     pair = vircurexapi.Pair(coin+'_btc')
     try:
         bid = pair.highest_bid
+        ask = pair.lowest_ask
     except:
         # probably a coin that Vircurex doesn't have an exchange for, so just return
         return
     account = vircurexapi.Account(vircurexUsername, vircurexSecret)
     balance = account.balance(coin.upper())
     if balance >= 0.1:
-        order = account.sell(coin.upper(),balance, 'BTC', bid*tradeMultiplier)
+        price = bid * tradeMultiplier
+        if price > ask and tradeMultiplierCheck == True:
+            price = ask - 0.00000001
+        order = account.sell(coin.upper(),balance, 'BTC', price)
         account.release_order(order['orderid'])
 
 def sellCoinCryptsy(coin):
     acct = PyCryptsy(cryptsyPubkey, cryptsyPrivkey)
     bal = acct.GetAvailableBalance(coin)
     price = acct.GetBuyPrice(coin, "BTC")*tradeMultiplier
+    sell = acct.GetSellPrice(coin, "BTC")
+    if price > sell and tradeMultiplierCheck == True:
+        price = sell - 0.00000001
     if price > 0:
         acct.CreateSellOrder(coin, "BTC", bal, price)
     return
