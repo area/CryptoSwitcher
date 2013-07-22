@@ -10,6 +10,7 @@
 
 # Enable the coins you want to mine here.
 mineAMC = False
+mineANC = False
 mineARG = False
 mineBQC = False
 mineBTB = False
@@ -66,6 +67,7 @@ mineVANITY = False
 # Any coins you aren't mining you can just leave blank.
 # For Windows you can use bat-files, eg "BTCscript = bitcoin.bat".
 AMCscript = 
+ANCscript = 
 ARGscript = 
 BQCscript = 
 BTBscript = 
@@ -109,6 +111,7 @@ VANITYscript =
 # The fee simply adds to the profitability before calculating the most profitable coin.
 # Negative values are also allowed, they increase the profitability.
 feeAMC = 0
+feeANC = 0
 feeARG = 0
 feeBQC = 0
 feeBTB = 0
@@ -207,6 +210,7 @@ cryptsyPrivateKey = YOUR_CRYPTSY_API_PRIVATE_KEY
 
 # Enable the coins you want to sell here.
 sellAMC = False
+sellANC = False
 sellARG = False
 sellBQC = False
 sellBTB = False
