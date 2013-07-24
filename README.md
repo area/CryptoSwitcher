@@ -6,8 +6,11 @@ using the powers of http://dustcoin.com.
 
 Dependencies
 ---
+* NumPy
 * BeautifulSoup4
 * urllib2
+* simplejson
+* PycURL
 * btce-api (included)
 * pyvircurex (included)
 * PyCryptsy (included)
