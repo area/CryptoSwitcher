@@ -50,9 +50,11 @@ coins['btb'] =  Coin('Bitbar')
 coins['btc'] =  Coin('Bitcoin')
 coins['bte'] =  Coin('Bytecoin')
 coins['cap'] =  Coin('Bottlecap')
+coins['cgb'] =  Coin('CryptogenicBullion')
 coins['cnc'] =  Coin('CHNCoin')
 coins['dbl'] =  Coin('Doubloons')
 coins['dgc'] =  Coin('DigitalCoin')
+coins['emd'] =  Coin('Emerald')
 coins['elc'] =  Coin('Elacoin')
 coins['ezc'] =  Coin('EZCoin')
 coins['frc'] =  Coin('Freicoin')
@@ -61,6 +63,7 @@ coins['fst'] =  Coin('Fastcoin')
 coins['ftc'] =  Coin('Feathercoin')
 coins['gld'] =  Coin('GLDCoin')
 coins['hyc'] =  Coin('Hypercoin')
+coins['kgc'] =  Coin('Krugercoin')
 coins['jkc'] =  Coin('Junkcoin')
 coins['lky'] =  Coin('Luckycoin')
 coins['ltc'] =  Coin('Litecoin')
@@ -319,7 +322,7 @@ while True:
             try:
                 fullstr = prestr + "cryptsy"
                 print fullstr + (79-len(fullstr))*" " + "\r",
-                req = urllib2.Request("https://www.cryptsy.com/api.php?method=orderdata")
+                req = urllib2.Request("http://pubapi.cryptsy.com/api.php?method=orderdata")
                 opener_cyp = urllib2.build_opener()
                 opener_cyp.addheaders = [('User-agent', 'CryptoSwitcher')]
                 f = opener_cyp.open(req, timeout = 5)
@@ -497,8 +500,9 @@ while True:
                             print fullstr + (79-len(fullstr))*" " + "\r",
                             for item in data_cyp['return']:
                                 if item.lower()==abbreviation:
-                                    if coins[abbreviation].price < float(data_cyp['return'][item]['buyorders'][0]['price']):
-                                        coins[abbreviation].price = float(data_cyp['return'][item]['buyorders'][0]['price'])
+                                    if data_cyp['return'][item]['secondarycode']=='BTC':
+                                        if coins[abbreviation].price < float(data_cyp['return'][item]['buyorders'][0]['price']):
+                                            coins[abbreviation].price = float(data_cyp['return'][item]['buyorders'][0]['price'])
                                     success = 1
                                     break
                         except:
