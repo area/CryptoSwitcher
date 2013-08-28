@@ -44,6 +44,7 @@ minePXC = False
 mineSPT = False
 mineTRC = False
 mineWDC = False
+mineZET = False
 
 # Listed against LTC only (currently unusable by CS)
 mineDBL = False
@@ -118,6 +119,7 @@ SPTscript =
 TRCscript = 
 WDCscript = 
 YACscript = 
+ZETscript = 
 
 VANITYscript =
 
@@ -171,6 +173,7 @@ feeSPT = 0
 feeTRC = 0
 feeWDC = 0
 feeYAC = 0
+feeZET = 0
 
 
 ################################################################################
@@ -278,3 +281,4 @@ sellSPT = False
 sellTRC = False
 sellWDC = False
 sellYAC = False
+sellZET = False

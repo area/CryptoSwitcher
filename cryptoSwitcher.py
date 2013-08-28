@@ -85,6 +85,7 @@ coins['spt'] =  Coin('Spot')
 coins['trc'] =  Coin('TerraCoin')
 coins['wdc'] =  Coin('Worldcoin')
 coins['yac'] =  Coin('YaCoin')
+coins['zet'] =  Coin('Zetacoin')
 # Merged
 coins['dvc'] =  Coin('Devcoin')
 coins['dvc'].merged = True
