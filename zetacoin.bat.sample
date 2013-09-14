@@ -5,4 +5,4 @@ if "%ERRORLEVEL%"=="0" taskkill /IM cgminer.exe /F
 ::start new cgminer
 rem. Change the path to where cgminer or bfgminer is installed.
 set CGPATH="C:\Program Files (x86)\cgminer-3.4.0-windows"
-start cmd.exe /C "%CGPATH%\cgminer-nogpu.exe --icarus-options 115200:1:1 --icarus-timing 3.0=100 -c %CGPATH%\bitcoin_cgminer.conf --api-network --api-listen --api-allow W:127.0.0.1"
+start cmd.exe /C "%CGPATH%\cgminer-nogpu.exe --icarus-options 115200:1:1 --icarus-timing 3.0=100 -c %CGPATH%\zetacoin_cgminer.conf --api-network --api-listen --api-allow W:127.0.0.1"

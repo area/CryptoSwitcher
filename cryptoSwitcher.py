@@ -45,6 +45,7 @@ coins = {}
 coins['amc'] =  Coin('AmericanCoin')
 coins['anc'] =  Coin('Anoncoin')
 coins['arg'] =  Coin('Argentum')
+coins['bfc'] =  Coin('ButterflyCoin')
 coins['bqc'] =  Coin('BBQCoin')
 coins['btb'] =  Coin('Bitbar')
 coins['btc'] =  Coin('Bitcoin')
