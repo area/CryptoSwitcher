@@ -57,8 +57,10 @@ In hope, not expectation:
 This couldn't have been made without the work of others; if you feel like
 tipping the other people whose work is used here:
 
+
 * Dustcoin: `1F6fV4U2xnpAuKtmQD6BWpK3EuRosKzF8U` at time of writing, see http://dustcoin.com/donate for latest
 * Fizzisist: `122LV3CNADj1yHU2tFPEhcCWR5QbfMzNcm` at time of writing, see http://www.fizzisist.com for latest
 * Alan McIntyre : `16vnh6gwFYLGneBa8JUk7NaXpEt3Qojqs1` at time of writing, see https://github.com/alanmcintyre/btce-api
 * sal002: Sign up for Vircurex through the referral link on http://www.coinchoose.com
 * Scott Alfter: `1TipsGocnz2N5qgAm9f7JLrsMqkb3oXe2` for PyCryptsy
+* MasterX1582: `1MegaXG1bd6mTEQCdAMjVzGexcYrF5LJKv` at the time of writing, see https://github.com/MasterX1582/CryptoSwitcher/ for latest
