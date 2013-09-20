@@ -17,6 +17,7 @@ mineBFC = False
 mineBQC = False
 mineBTB = False
 mineBTC = True
+mineBTE = False
 mineBTG = False
 mineCAP = False
 mineCGB = False

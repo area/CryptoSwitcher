@@ -1,0 +1,19 @@
+@echo off
+rem. What config file do we use?
+set CGCONF=bytecoin_cgminer.conf
+
+rem. Change the path to where cgminer or bfgminer is installed.
+set CGPATH="C:\Program Files (x86)\cgminer-3.4.0-windows"
+
+rem. Witch exe are we using?.
+set CGEXE="cgminer-nogpu.exe"
+
+rem. What extra cgminer options do we need?
+set CGOPT="--icarus-options 115200:1:1 --icarus-timing 3.0=100 --api-network --api-listen --api-allow W:127.0.0.1"
+
+::end old cgminer if running
+tasklist /FI "IMAGENAME eq %CGEXE%" 2>NUL | find /I /N %CGEXE%>NUL
+if "%ERRORLEVEL%"=="0" taskkill /IM %CGEXE% /F
+
+::start new cgminer
+start cmd.exe /C "%CGPATH%\%CGEXE% "%CGOPT%" -c %CGPATH%\%CGCONF%"
