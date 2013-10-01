@@ -57,7 +57,6 @@ mineJKC = False
 mineRYC = False
 
 # No data available from sources
-mineBTE = False
 minePWC = False
 mineMEC = False
 mineYAC = False
