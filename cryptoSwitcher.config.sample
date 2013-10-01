@@ -65,6 +65,7 @@ mineYAC = False
 # BTC Merged mining coins. Will be added to Bitcoin profitibilty when enabled.
 mineDVC = True
 mineIXC = True
+mineI0C = False
 mineNMC = True
 
 # Enable to mine vanity addresses.

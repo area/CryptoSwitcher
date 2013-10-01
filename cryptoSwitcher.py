@@ -94,6 +94,8 @@ coins['dvc'] =  Coin('Devcoin')
 coins['dvc'].merged = True
 coins['ixc'] =  Coin('IXCoin')
 coins['ixc'].merged = True
+coins['i0c'] =  Coin('I0Coin')
+coins['i0c'].merged = True
 coins['nmc'] =  Coin('NameCoin')
 coins['nmc'].merged = True
 # Kind of an alternate coin...
