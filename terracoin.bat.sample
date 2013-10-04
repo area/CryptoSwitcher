@@ -1,6 +1,6 @@
 @echo off
 rem. What config file do we use?
-set CGCONF=bitcoin_cgminer.conf
+set CGCONF=terracoin_cgminer.conf
 
 rem. Change the path to where cgminer or bfgminer is installed.
 set CGPATH="C:\Program Files (x86)\cgminer-3.4.0-windows"
