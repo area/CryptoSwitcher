@@ -262,7 +262,7 @@ def sellCoinCryptsy(coin):
         price = sell - 0.00000001
     if price > 0:
         acct.CreateSellOrder(coin, "BTC", bal, price)
-    else
+    else:
         #Try to get price from a coin/LTC market:
         priceltc = acct.GetBuyPrice(coin, "LTC")*tradeMultiplier
         if priceltc > 0:
