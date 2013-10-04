@@ -42,6 +42,7 @@ class Coin:
         self.algo = ""
 
 coins = {}
+coins['alf'] =  Coin('AlphaCoin')
 coins['amc'] =  Coin('AmericanCoin')
 coins['anc'] =  Coin('Anoncoin')
 coins['arg'] =  Coin('Argentum')
@@ -76,22 +77,24 @@ coins['mec'] =  Coin('Megacoin')
 coins['mem'] =  Coin('Memecoin')
 coins['mnc'] =  Coin('Mincoin')
 coins['nbl'] =  Coin('Nibble')
+coins['nrb'] =  Coin('NoirBits')
 coins['nvc'] =  Coin('NovaCoin')
 coins['ppc'] =  Coin('PPCoin')
 coins['pwc'] =  Coin('Powercoin')
 coins['pxc'] =  Coin('Phenixcoin')
 coins['ryc'] =  Coin('RoyalCoin')
 coins['spt'] =  Coin('Spot')
+coins['sbc'] =  Coin('StableCoin')
 coins['trc'] =  Coin('TerraCoin')
 coins['wdc'] =  Coin('Worldcoin')
 coins['yac'] =  Coin('YaCoin')
 coins['zet'] =  Coin('Zetacoin')
 # Merged
-coins['dvc'] =  Coin('Devcoin')
+coins['dvc'] = Coin('Devcoin')
 coins['dvc'].merged = True
-coins['ixc'] =  Coin('IXCoin')
+coins['ixc'] = Coin('IXCoin')
 coins['ixc'].merged = True
-coins['nmc'] =  Coin('NameCoin')
+coins['nmc'] = Coin('NameCoin')
 coins['nmc'].merged = True
 # Kind of an alternate coin...
 coins['vanity'] = Coin('Vanity Mining')
@@ -254,6 +257,11 @@ def sellCoinCryptsy(coin):
         price = sell - 0.00000001
     if price > 0:
         acct.CreateSellOrder(coin, "BTC", bal, price)
+    else
+        #Try to get price from a coin/LTC market:
+        priceltc = acct.GetBuyPrice(coin, "LTC")*tradeMultiplier
+        if priceltc > 0:
+            acct.CreateSellOrder(coin, "LTC", bal, priceltc)
     return
 
 if enableBTCE:

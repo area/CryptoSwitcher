@@ -9,6 +9,7 @@
 [MineCoins]
 
 # Enable the coins you want to mine here.
+mineALF = False
 mineAMC = False
 mineANC = False
 mineARG = False
@@ -38,10 +39,12 @@ mineLTC = True
 mineMEM = False
 mineMNC = False
 mineNBL = False
+mineNRB = False
 mineNVC = False
 minePPC = False
 minePXC = False
 mineSPT = False
+mineSBC = False
 mineTRC = False
 mineWDC = False
 mineZET = False
@@ -76,6 +79,7 @@ mineVANITY = False
 # Examples included are 'litecoin.sh.sample' and 'bitcoin.sh.sample'.
 # Any coins you aren't mining you can just leave blank.
 # For Windows you can use bat-files, eg "BTCscript = bitcoin.bat".
+ALFscript = 
 AMCscript = 
 ANCscript = 
 ARGscript = 
@@ -110,12 +114,14 @@ MECscript =
 MEMscript = 
 MNCscript = 
 NBLscript = 
+NRBscript = 
 NVCscript = 
 PPCscript = 
 PWCscript = 
 PXCscript = 
 RYCscript = 
 SPTscript = 
+SBCscript = 
 TRCscript = 
 WDCscript = 
 YACscript = 
@@ -130,6 +136,7 @@ VANITYscript =
 # Set specific fees for every coin (in percent).
 # The fee simply adds to the profitability before calculating the most profitable coin.
 # Negative values are also allowed, they increase the profitability.
+feeALF = 0
 feeAMC = 0
 feeANC = 0
 feeARG = 0
@@ -164,12 +171,14 @@ feeMEC = 0
 feeMEM = 0
 feeMNC = 0
 feeNBL = 0
+feeNRB = 0
 feeNVC = 0
 feePPC = 0
 feePWC = 0
 feePXC = 0
 feeRYC = 0
 feeSPT = 0
+feeSBC = 0
 feeTRC = 0
 feeWDC = 0
 feeYAC = 0
@@ -239,6 +248,7 @@ cryptsyPublicKey = YOUR_CRYPTSY_API_PUBLIC_KEY
 cryptsyPrivateKey = YOUR_CRYPTSY_API_PRIVATE_KEY
 
 # Enable the coins you want to sell here.
+sellALF = False
 sellAMC = False
 sellANC = False
 sellARG = False
@@ -272,12 +282,14 @@ sellMEC = False
 sellMEM = False
 sellMNC = False
 sellNBL = False
+sellNRB = False
 sellNVC = False
 sellPPC = False
 sellPWC = False
 sellPXC = False
 sellRYC = False
 sellSPT = False
+sellSBC = False
 sellTRC = False
 sellWDC = False
 sellYAC = False
