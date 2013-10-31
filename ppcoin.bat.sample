@@ -17,4 +17,3 @@ if "%ERRORLEVEL%"=="0" taskkill /IM %CGEXE% /F
 
 ::start new cgminer
 start cmd.exe /C "%CGPATH%\%CGEXE% "%CGOPT%" -c %CGPATH%\%CGCONF%"
-start cmd.exe /C "%CGPATH%\%CGEXE% "%CGOPT%" -c %CGPATH%\%CGCONF% --api-network --api-listen --api-allow W:127.0.0.1"
