@@ -42,6 +42,7 @@ class Coin:
         self.algo = ""
 
 coins = {}
+diffsrc = {}
 coins['alf'] =  Coin('AlphaCoin')
 coins['amc'] =  Coin('AmericanCoin')
 coins['anc'] =  Coin('Anoncoin')
@@ -53,6 +54,7 @@ coins['btb'] =  Coin('Bitbar')
 coins['btc'] =  Coin('Bitcoin')
 coins['bte'] =  Coin('Bytecoin')
 coins['btg'] =  Coin('Bitgem')
+diffsrc['btg'] = 'http://bitgem.dyndns.org:2750/chain/Bitgem/q/getdifficulty'
 coins['cap'] =  Coin('Bottlecap')
 coins['cgb'] =  Coin('CryptogenicBullion')
 coins['cnc'] =  Coin('CHNCoin')
@@ -90,6 +92,7 @@ coins['spt'] =  Coin('Spot')
 coins['sbc'] =  Coin('StableCoin')
 coins['tgc'] =  Coin('TigerCoin')
 coins['trc'] =  Coin('TerraCoin')
+diffsrc['trc'] = 'http://cryptocoinexplorer.com:3750/chain/Terracoin/q/getdifficulty'
 coins['uno'] =  Coin('Unobtainium')
 coins['wdc'] =  Coin('Worldcoin')
 coins['xjo'] =  Coin('Joulecoin')
@@ -447,11 +450,11 @@ while True:
                     if item['symbol'].lower()!=abbreviation:
                         continue
 
-                    # for trc: use a different source for difficulty
-                    if abbreviation == 'trc':
-                        req = urllib2.Request("http://cryptocoinexplorer.com:3750/chain/Terracoin/q/getdifficulty")
+                    # for btg/trc: use different sources for difficulty
+                    if diffsrc[abbreviation] != '':
+                        req = urllib2.Request(diffsrc[abbreviation])
                         f = opener.open(req, timeout = 5)
-                        coins['trc'].diff = simplejson.load(f)
+                        coins[abbreviation].diff = simplejson.load(f)
 
                     # for btc: we dont need to calculate
                     if abbreviation=='btc':
