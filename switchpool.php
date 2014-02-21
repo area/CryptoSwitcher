@@ -42,9 +42,9 @@ function readsockline($socket)
  return $line;
 }
 #
-function request($cmd)
+function request($host, $port, $cmd)
 {
- $socket = getsock('127.0.0.1', 4028);
+ $socket = getsock($host, $port);
  if ($socket != null)
  {
 	socket_write($socket, $cmd, strlen($cmd));
@@ -108,23 +108,31 @@ function request($cmd)
  return null;
 }
 
-request("addpool|".$argv[1].",".$argv[2].",".$argv[3]);
+if ($argv[5]=="")
+  $host="127.0.0.1";
+else
+  $host=$argv[5];
+if ($argv[6]=="")
+  $port=4028;
+else
+  $port=$argv[6];
+request($host, $port, "addpool|".$argv[1].",".$argv[2].",".$argv[3]);
 if ($argv[4]=="clear")
 {
   $found=0;
   while (!$found)
   {
-    $pools=request("pools");
+    $pools=request($host, $port, "pools");
     foreach ($pools as $pool)
       if (array_key_exists("URL", $pool) && !$found)
         if ($pool["URL"]==$argv[1] && !$found)
         {
-          request("switchpool|".$pool["POOL"]);
+          request($host, $port, "switchpool|".$pool["POOL"]);
           $found=1;
         }
   }
   sleep(2);
-  $pools=request("pools");
+  $pools=request($host, $port, "pools");
   $found=0;
   foreach ($pools as $pool)
     if (array_key_exists("URL", $pool))
@@ -137,8 +145,8 @@ if ($argv[4]=="clear")
   krsort($remove);
   foreach ($remove as $poolnum)
   {
-    request("disablepool|".$poolnum);
-    request("removepool|".$poolnum);
+    request($host, $port, "disablepool|".$poolnum);
+    request($host, $port, "removepool|".$poolnum);
   }
 }
 ?>
