@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from bs4 import BeautifulSoup
 import urllib2
 import time
@@ -74,6 +76,7 @@ coins['frk'] =  Coin('Franko')
 coins['fst'] =  Coin('Fastcoin')
 coins['ftc'] =  Coin('Feathercoin')
 coins['gdc'] =  Coin('Grandcoin')
+coins['glc'] =  Coin('Globalcoin')
 coins['gld'] =  Coin('GLDCoin')
 coins['hbn'] =  Coin('Hobonickel')
 coins['hyc'] =  Coin('Hypercoin')
@@ -94,8 +97,9 @@ coins['ppc'] =  Coin('PPCoin')
 coins['pwc'] =  Coin('Powercoin')
 coins['pxc'] =  Coin('Phenixcoin')
 coins['ryc'] =  Coin('RoyalCoin')
-coins['spt'] =  Coin('Spot')
 coins['sbc'] =  Coin('StableCoin')
+coins['spt'] =  Coin('Spot')
+coins['sxc'] =  Coin('Sexcoin')
 coins['tgc'] =  Coin('TigerCoin')
 coins['tips'] = Coin('FedoraCoin')
 coins['trc'] =  Coin('TerraCoin')
